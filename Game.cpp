@@ -1,4 +1,8 @@
 #include "Game.h"
+#include <SFML/Graphics.hpp>
+#include <string>
+
+
 
 //Private Functions
 void Game::initialiseVariables()
@@ -30,24 +34,30 @@ void Game::initialiseMenuBar()
 void Game::initialiseMenuScreen()
 {
 	//add Text for Play vs AI, Settings, How to Use, Instructions
-	sf::Font font;
-	font.loadFromFile("");
-	this->howToUse.setPosition(300, 250);
-	this->howToUse.setCharacterSize(25);
-	this->howToUse.setString("How To Use");
+
+	this->font.loadFromFile("Fonts/Roboto-Black.ttf");
+
+	this->howToUse.setString("How To Play");
 	this->howToUse.setFillColor(sf::Color::White);
-	this->settings.setString("Settings");
+	this->howToUse.setFont(font);
+	this->howToUse.setCharacterSize(30);
+	
+	/*this->settings.setString("Settings");
 	this->settings.setFillColor(sf::Color::White);
+	this->settings.setFont(font);
 	this->instructions.setString("Instructions");
 	this->instructions.setFillColor(sf::Color::White);
-	this->playVsAi.setString("Play VS AI");
+	this->instructions.setFont(font);*/
+	/*this->playVsAi.setString("Play VS AI");
 	this->playVsAi.setFillColor(sf::Color::White);
-	
+	this->playVsAi.setFont(font);
+	*/
 
 
 
 
 }
+
 
 
 //Constructor and Destructor
@@ -85,6 +95,12 @@ void Game::pollEvents()
 }
 
 //Functions
+
+void Game::renderMenuText(sf::RenderTarget& target)
+{
+	target.draw(this->howToUse);
+}
+
 void Game::update()
 {
 	this->pollEvents();
@@ -93,19 +109,24 @@ void Game::update()
 	std::cout << "Mouse pos = " << sf::Mouse::getPosition(*this->window).x << "," << sf::Mouse::getPosition(*this->window).y << std::endl;
 }
 
+void Game::UpdateText()
+{
+}
+
 void Game::render()
 {
 	this->window->clear(sf::Color(0, 100, 0));
 
 	//draw menu
 	this->window->draw(this->menuBar);
-	this->window->draw(this->playVsAi);
-	this->window->draw(this->howToUse);
-	this->window->draw(this->instructions);
-	this->window->draw(this->settings);
-
+	
+	this->renderMenuText(*this->window);
+	
+	
 
 	
 
 	this->window->display();
 }
+
+

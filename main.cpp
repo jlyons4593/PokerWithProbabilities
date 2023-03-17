@@ -21,12 +21,52 @@ void runGame()
         game.render();
     }
 }
+//#include <SFML/Graphics.hpp>
+//
+//void handleEvents(sf::RenderWindow& window)
+//{
+//    sf::Event event;
+//    while (window.pollEvent(event))
+//    {
+//        if (event.type == sf::Event::Closed)
+//            window.close();
+//    }
+//}
+//
+//void drawMenu(sf::RenderWindow& window)
+//{
+//    sf::Font font;
+//    if (!font.loadFromFile("Fonts/Roboto-Black.ttf"))
+//    {
+//        // error handling
+//    }
+//
+//    sf::Text text("Game Menu", font, 50);
+//    text.setFillColor(sf::Color::White);
+//    text.setPosition(100, 100);
+//
+//    window.draw(text);
+//}
+//
+//void runGame()
+//{
+//    sf::RenderWindow window(sf::VideoMode(800, 600), "Game Menu");
+//
+//    while (window.isOpen())
+//    {
+//        handleEvents(window);
+//        window.clear(sf::Color::Black);
+//        drawMenu(window);
+//        window.display();
+//    }
+//}
 
 int main()
 {
     runGame();
     return 0;
 }
+
 
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

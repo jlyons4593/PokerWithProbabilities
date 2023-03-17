@@ -6,7 +6,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
-
+#include <string>
 
 /*
 	Game engine wrapper class
@@ -24,6 +24,11 @@ private:
 	// menu objects
 
 	sf::RectangleShape menuBar;
+
+	// font
+	sf::Font font;
+
+	// Text
 	sf::Text playVsAi;
 	sf::Text settings;
 	sf::Text howToUse;
@@ -36,6 +41,7 @@ private:
 	void initialiseWindow();
 	void initialiseMenuBar();
 	void initialiseMenuScreen();
+	
 
 public:
 	//Constructors / Destructors
@@ -50,7 +56,9 @@ public:
 	//functions
 	void pollEvents();
 	void update();
+	void UpdateText();
 	void render();
+	void renderMenuText(sf::RenderTarget& target);
 
 };
 
