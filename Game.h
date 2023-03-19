@@ -21,18 +21,29 @@ private:
 	sf::VideoMode videomode;
 	sf::Event event;
 
-	// menu objects
 
+	//mouse variables
+	sf::Vector2i mousePositionInt;
+	sf::Vector2f mousePositionFloat;
+	bool lMBDown;
+
+	// menu objects
 	sf::RectangleShape menuBar;
+
+	//TitleText
+	sf::Text title;
+	
+
+	// menu Text
+	sf::Text playVsAi;
+	sf::Text settings;
+	sf::Text howToPlay;
+	sf::Text instructions;
 
 	// font
 	sf::Font font;
 
-	// Text
-	sf::Text playVsAi;
-	sf::Text settings;
-	sf::Text howToUse;
-	sf::Text instructions;
+	
 
 
 	// Private functions
@@ -41,6 +52,7 @@ private:
 	void initialiseWindow();
 	void initialiseMenuBar();
 	void initialiseMenuScreen();
+	
 	
 
 public:
@@ -59,6 +71,8 @@ public:
 	void UpdateText();
 	void render();
 	void renderMenuText(sf::RenderTarget& target);
+	void processMenuChoices();
+	void updateMousePositions();
 
 };
 

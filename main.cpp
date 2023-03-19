@@ -21,45 +21,8 @@ void runGame()
         game.render();
     }
 }
-//#include <SFML/Graphics.hpp>
-//
-//void handleEvents(sf::RenderWindow& window)
-//{
-//    sf::Event event;
-//    while (window.pollEvent(event))
-//    {
-//        if (event.type == sf::Event::Closed)
-//            window.close();
-//    }
-//}
-//
-//void drawMenu(sf::RenderWindow& window)
-//{
-//    sf::Font font;
-//    if (!font.loadFromFile("Fonts/Roboto-Black.ttf"))
-//    {
-//        // error handling
-//    }
-//
-//    sf::Text text("Game Menu", font, 50);
-//    text.setFillColor(sf::Color::White);
-//    text.setPosition(100, 100);
-//
-//    window.draw(text);
-//}
-//
-//void runGame()
-//{
-//    sf::RenderWindow window(sf::VideoMode(800, 600), "Game Menu");
-//
-//    while (window.isOpen())
-//    {
-//        handleEvents(window);
-//        window.clear(sf::Color::Black);
-//        drawMenu(window);
-//        window.display();
-//    }
-//}
+
+
 
 int main()
 {
@@ -67,7 +30,47 @@ int main()
     return 0;
 }
 
-
+//#include <SFML/Graphics.hpp>
+//
+//int main()
+//{
+//    sf::RenderWindow window(sf::VideoMode(800, 600), "Center Text Example");
+//
+//    sf::Font font;
+//    sf::Text text;
+//
+//    // Load the default font by passing nullptr as the filename
+//    font.loadFromFile("Fonts/Roboto-Black.ttf");
+//
+//    // Set the font and string for the text object
+//    text.setFont(font);
+//    text.setString("Hello, world!");
+//    text.setCharacterSize(24);
+//
+//    // Set the origin to the center of the text
+//    sf::FloatRect textRect = text.getLocalBounds();
+//    text.setOrigin(textRect.left + textRect.width / 2.0f,
+//        textRect.top + textRect.height / 2.0f);
+//
+//    // Position the text in the center of the screen
+//    text.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f);
+//
+//    while (window.isOpen())
+//    {
+//        sf::Event event;
+//        while (window.pollEvent(event))
+//        {
+//            if (event.type == sf::Event::Closed)
+//                window.close();
+//        }
+//
+//        window.clear(sf::Color::Black);
+//        window.draw(text);
+//        window.display();
+//    }
+//
+//    return 0;
+//}
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
