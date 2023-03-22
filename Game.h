@@ -43,7 +43,19 @@ private:
 	// font
 	sf::Font font;
 
-	
+	// Menu Playing cards textures
+	sf::Texture heartsTen;
+	sf::Texture heartsJack;
+	sf::Texture heartsQueen;
+	sf::Texture heartsKing;
+	sf::Texture heartsAce;
+
+	// Menu playing card sprites
+	sf::Sprite ten;
+	sf::Sprite jack;
+	sf::Sprite queen;
+	sf::Sprite king;
+	sf::Sprite ace;
 
 
 	// Private functions
@@ -52,6 +64,7 @@ private:
 	void initialiseWindow();
 	void initialiseMenuBar();
 	void initialiseMenuScreen();
+	void initialisePlayingCards();
 	
 	
 
@@ -71,6 +84,7 @@ public:
 	void UpdateText();
 	void render();
 	void renderMenuText(sf::RenderTarget& target);
+	void renderMenuSprites(sf::RenderTarget& target);
 	void processMenuChoices();
 	void updateMousePositions();
 
