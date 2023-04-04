@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "Game.h"
+#include "Deck.h"
 
 
 
@@ -27,6 +28,7 @@ void runGame()
 int main()
 {
     runGame();
+    
     return 0;
 }
 

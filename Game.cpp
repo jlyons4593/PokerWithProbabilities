@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <cmath>
+#include "deck.h"
+#include "PokerOffline.h"
 
 
 
@@ -12,16 +14,32 @@ void Game::initialiseVariables()
 	
 	this->lMBDown = false;
 
+	this->deckLoader();
+
+}
+
+void Game::deckLoader() {
+	// Creating deck instance
+	
+	this->deck.initialiseDeck();
+
+	/*Card c = this->deck.drawCard();
+	Card b = this->deck.drawCard();
+	std::cout << (int)c.value << " of " << (int)c.suit << std::endl;
+	std::cout << int(b.value) << " of " << (int)b.suit << std::endl;
+	this->deck.shuffleDeck();
+	Card d = this->deck.drawCard();
+	std::cout << (int)d.value << " of " << (int)d.suit << std::endl;*/
 }
 
 void Game::initialiseWindow()
 {
-	this->videomode.height = 1080;
-	this->videomode.width = 1920;
+	this->videomode.height = 762;
+	this->videomode.width = 1280;
 	/*this->videomode.getDesktopMode;*/
 	this->window = new sf::RenderWindow(this->videomode, "Poker&Probabilities", sf::Style::Titlebar | sf::Style::Close);
 
-	this->window->setFramerateLimit(30);
+	this->window->setFramerateLimit(144);
 }
 
 void Game::initialiseMenuBar()
@@ -92,8 +110,8 @@ void Game::initialiseMenuScreen()
 	this->howToPlay.setPosition(round(this->videomode.width / 2), 200+3*(this->videomode.height / 8));
 
 	
-
 	//instructions choice
+
 	this->instructions.setString("Instructions");
 	this->instructions.setFillColor(sf::Color::White);
 	this->instructions.setFont(font);
@@ -108,41 +126,35 @@ void Game::initialiseMenuScreen()
 
 void Game::initialisePlayingCards()
 {
-	//Loading textures
-	this->heartsTen.loadFromFile("Resources/card_hearts_10.png");
-	this->heartsJack.loadFromFile("Resources/card_hearts_J.png");
-	this->heartsQueen.loadFromFile("Resources/card_hearts_Q.png");
-	this->heartsKing.loadFromFile("Resources/card_hearts_K.png");
-	this->heartsAce.loadFromFile("Resources/card_hearts_A.png");
 
 	// Setting sprites textures
-	this->ten.setTexture(this->heartsTen);
+	this->ten.setTexture(this->deck.currentDeck[35].cardFace);
 	this->ten.setScale(1.8f,1.8f);
 	sf::FloatRect tenRectangle = this->ten.getLocalBounds();
 	this->ten.setOrigin(tenRectangle.left + round(tenRectangle.width / 2.0f), tenRectangle.top + round(tenRectangle.height / 2.0f));
 	this->ten.setPosition((this->videomode.width / 2)-(this->videomode.width/5), 200.f);
 	
 
-	this->jack.setTexture(this->heartsJack);
+	this->jack.setTexture(this->deck.currentDeck[36].cardFace);
 	this->jack.setScale(1.8f,1.8f);
 	sf::FloatRect jackRectangle = this->jack.getLocalBounds();
 	this->jack.setOrigin(jackRectangle.left + round(jackRectangle.width / 2.0f), jackRectangle.top + round(jackRectangle.height / 2.0f));
 	this->jack.setPosition((this->videomode.width / 2)-(this->videomode.width/10), 200.f);
 
-	this->queen.setTexture(this->heartsQueen);
+	this->queen.setTexture(this->deck.currentDeck[37].cardFace);
 	this->queen.setScale(1.8f,1.8f);
 	sf::FloatRect queenRectangle = this->queen.getLocalBounds();
 	this->queen.setOrigin(queenRectangle.left + round(queenRectangle.width / 2.0f), queenRectangle.top + round(queenRectangle.height / 2.0f));
 	this->queen.setPosition(this->videomode.width / 2, 200.f);
 	
 
-	this->king.setTexture(this->heartsKing);
+	this->king.setTexture(this->deck.currentDeck[38].cardFace);
 	this->king.setScale(1.8f,1.8f);
 	sf::FloatRect kingRectangle = this->king.getLocalBounds();
 	this->king.setOrigin(kingRectangle.left + round(kingRectangle.width / 2.0f), kingRectangle.top + round(kingRectangle.height / 2.0f));
 	this->king.setPosition((this->videomode.width / 2)+(this->videomode.width/10), 200.f);
 
-	this->ace.setTexture(this->heartsAce);
+	this->ace.setTexture(this->deck.currentDeck[36].cardFace);
 	this->ace.setScale(1.8f,1.8f);
 	sf::FloatRect aceRectangle = this->ace.getLocalBounds();
 	this->ace.setOrigin(aceRectangle.left + round(aceRectangle.width / 2.0f), aceRectangle.top + round(aceRectangle.height / 2.0f));
@@ -224,6 +236,18 @@ void Game::processMenuChoices()
 	}
 	else if (this->playVsAi.getGlobalBounds().contains(this->mousePositionFloat))
 	{
+		PokerOffline newGame;
+		this->window->close();
+		
+		while (newGame.isGameRunning())
+		{
+			//Update
+			newGame.update();
+
+			//Render
+			newGame.render();
+		}
+
 		std::cout << "User chose play vs AI" << std::endl;
 	}
 }
@@ -269,16 +293,16 @@ void Game::render()
 {
 	this->window->clear(sf::Color(0, 100, 0));
 
+
+
 	//draw menu
 	this->window->draw(this->menuBar);
-	
+
 	this->renderMenuText(*this->window);
 
 	this->renderMenuSprites(*this->window);
-	
-	
 
-	
+
 
 	this->window->display();
 }
