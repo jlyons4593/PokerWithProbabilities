@@ -7,6 +7,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 #include <string>
+#include "Deck.h"
 
 /*
 	Game engine wrapper class
@@ -40,6 +41,9 @@ private:
 	sf::Text howToPlay;
 	sf::Text instructions;
 
+	//deck object
+	Deck deck;
+
 	// font
 	sf::Font font;
 
@@ -65,6 +69,9 @@ private:
 	void initialiseMenuBar();
 	void initialiseMenuScreen();
 	void initialisePlayingCards();
+
+	//test functions
+	void deckLoader();
 	
 	
 
@@ -77,6 +84,7 @@ public:
 	const bool isGameRunning() const;
 
 
+	
 
 	//functions
 	void pollEvents();
