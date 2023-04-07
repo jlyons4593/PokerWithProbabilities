@@ -3,7 +3,7 @@
 #include <string>
 #include <cmath>
 #include "deck.h"
-#include "PokerOffline.h"
+#include "PokerOfflineUi.h"
 
 
 
@@ -236,7 +236,7 @@ void Game::processMenuChoices()
 	}
 	else if (this->playVsAi.getGlobalBounds().contains(this->mousePositionFloat))
 	{
-		PokerOffline newGame;
+		PokerOfflineUi newGame;
 		this->window->close();
 		
 		while (newGame.isGameRunning())

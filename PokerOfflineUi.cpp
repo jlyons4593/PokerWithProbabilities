@@ -1,6 +1,6 @@
-#include "PokerOffline.h"
+#include "PokerOfflineUi.h"
 
-void PokerOffline::initialiseVariables()
+void PokerOfflineUi::initialiseVariables()
 {
 	this->window = nullptr;
 	this->potAmount = 0;
@@ -11,7 +11,7 @@ void PokerOffline::initialiseVariables()
 
 }
 
-void PokerOffline::initialiseWindow() 
+void PokerOfflineUi::initialiseWindow() 
 {
 	this->videomode.height = 1080;
 	this->videomode.width = 1920;
@@ -20,7 +20,7 @@ void PokerOffline::initialiseWindow()
 
 	this->window->setFramerateLimit(144);
 }
-void PokerOffline::initialiseMenuBar()
+void PokerOfflineUi::initialiseMenuBar()
 {
 	this->font.loadFromFile("Fonts/Roboto-Black.ttf");
 	// Create Menu Bar
@@ -58,14 +58,14 @@ void PokerOffline::initialiseMenuBar()
 
 }
 
-void PokerOffline::initialisePlayScreenObjects()
+void PokerOfflineUi::initialisePlayScreenObjects()
 {
 	this->initialiseCommunityCardSprites();
 	this->initialisePlayerCardsSprites();
 	this->initialiseGeneralPlayButtons();
 }
 
-void PokerOffline::initialiseCommunityCardSprites()
+void PokerOfflineUi::initialiseCommunityCardSprites()
 {
 	this->communityCard1.setTexture(this->deck.backOfCardTexture);
 	this->communityCard1.setScale(1.5f, 1.5f);
@@ -99,61 +99,88 @@ void PokerOffline::initialiseCommunityCardSprites()
 
 }
 
-void PokerOffline::initialisePlayerCardsSprites()
+void PokerOfflineUi::initialisePlayerCardsSprites()
 {
+	this->player1card1.setTexture(this->deck.backOfCardTexture);
+	this->player1card1.setScale(1.5f, 1.5f);
+	sf::FloatRect cardRectangle = this->player1card1.getLocalBounds();
+	this->player1card1.setOrigin(cardRectangle.left + round(cardRectangle.width / 2.0f), cardRectangle.top + round(cardRectangle.height / 2.0f));
+	this->player1card1.setPosition((this->videomode.width / 2) - (this->videomode.width / 30), 700.f);
+
+	this->player1card2.setTexture(this->deck.backOfCardTexture);
+	this->player1card2.setScale(1.5f, 1.5f);
+	cardRectangle = this->player1card2.getLocalBounds();
+	this->player1card2.setOrigin(cardRectangle.left + round(cardRectangle.width / 2.0f), cardRectangle.top + round(cardRectangle.height / 2.0f));
+	this->player1card2.setPosition((this->videomode.width / 2) + (this->videomode.width / 30), 700.f);
+}
+
+void PokerOfflineUi::initialiseGeneralPlayButtons()
+{
+	this->pokerHandsButton.setFillColor(sf::Color::Red);
+	this->pokerHandsButton.setSize(sf::Vector2f(this->videomode.width/12, this->videomode.height/20));
+	sf::FloatRect pokerHandsRectangle = this->pokerHandsButton.getLocalBounds();
+	this->pokerHandsButton.setOrigin(pokerHandsRectangle.left + round(pokerHandsRectangle.width / 2.0f), pokerHandsRectangle.top + round(pokerHandsRectangle.height / 2.0f));
+	this->pokerHandsButton.setPosition(1750.f, 250.f);
+
+
+	this->pokerHandsText.setString("Poker Hands");
+	this->pokerHandsText.setFillColor(sf::Color::White);
+	this->pokerHandsText.setFont(font);
+	this->pokerHandsText.setCharacterSize(int(this->videomode.width / 80));
+	pokerHandsRectangle = this->pokerHandsText.getLocalBounds();
+	this->pokerHandsText.setOrigin(pokerHandsRectangle.left + round(pokerHandsRectangle.width / 2.0f), pokerHandsRectangle.top + round(pokerHandsRectangle.height / 2.0f));
+	this->pokerHandsText.setPosition(this->pokerHandsButton.getPosition());
 
 }
 
-void PokerOffline::initialiseGeneralPlayButtons()
-{
-}
-
-void PokerOffline::initialisePlayerButtons()
+void PokerOfflineUi::initialisePlayerButtons()
 {
 }
 
 
 
-void PokerOffline::renderText(sf::RenderTarget& target)
+void PokerOfflineUi::renderText(sf::RenderTarget& target)
 {
 	target.draw(this->title);
 	target.draw(this->settings);
 	target.draw(this->instructions);
+	target.draw(this->pokerHandsText);
 }
 
-void PokerOffline::renderGameObjects(sf::RenderTarget& target)
+void PokerOfflineUi::renderGameObjects(sf::RenderTarget& target)
 {
 	target.draw(this->communityCard1);
 	target.draw(this->communityCard2);
 	target.draw(this->communityCard3);
 	target.draw(this->communityCard4);
 	target.draw(this->communityCard5);
+	target.draw(this->player1card1);
+	target.draw(this->player1card2);
+	target.draw(this->pokerHandsButton);
+
 }
-
-
-void PokerOffline::render()
+void PokerOfflineUi::render()
 {
 	this->window->clear(sf::Color(0, 100, 0));
 
 	this->window->draw(this->menuBar);
 
-	this->renderText(*this->window);
-
 	this->renderGameObjects(*this->window);
 
+	this->renderText(*this->window);
 
 	this->window->display();
 
 }
 
 
-const bool PokerOffline::isGameRunning() const
+const bool PokerOfflineUi::isGameRunning() const
 {
 	return this->window->isOpen();
 }
 
 
-void PokerOffline::pollEvents() 
+void PokerOfflineUi::pollEvents() 
 {
 	while (this->window->pollEvent(this->event))
 	{
@@ -168,7 +195,7 @@ void PokerOffline::pollEvents()
 }
 
 //Constructor and Destructor
-PokerOffline::PokerOffline()
+PokerOfflineUi::PokerOfflineUi()
 {
 	this->initialiseVariables();
 	this->initialiseWindow();
@@ -178,18 +205,18 @@ PokerOffline::PokerOffline()
 
 }
 
-PokerOffline::~PokerOffline()
+PokerOfflineUi::~PokerOfflineUi()
 {
 	delete this->window;
 }
 
 
-void PokerOffline::updateMousePositions()
+void PokerOfflineUi::updateMousePositions()
 {
 	this->mousePositionInt = sf::Mouse::getPosition(*this->window);
 	this->mousePositionFloat = this->window->mapPixelToCoords(this->mousePositionInt);
 }
-void PokerOffline::update() {
+void PokerOfflineUi::update() {
 
 	this->pollEvents();
 
