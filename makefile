@@ -1,9 +1,9 @@
 CC = g++
-CFLAGS = -c -Wall
+CFLAGS = -c -Wall -std=c++20
 LDFLAGS = -L/opt/homebrew/Cellar/sfml/2.5.1_2/lib -lsfml-graphics -lsfml-window -lsfml-system
 INCLUDES = -I/opt/homebrew/Cellar/sfml/2.5.1_2/include
 
-SOURCES = main.cpp game.cpp deck.cpp pokerOfflineUi.cpp poker.cpp
+SOURCES = main.cpp game.cpp deck.cpp pokerOfflineUi.cpp poker.cpp player.cpp 
 OBJECTS = $(SOURCES:.cpp=.o)
 EXECUTABLE = mygame
 

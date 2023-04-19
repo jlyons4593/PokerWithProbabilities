@@ -105,13 +105,50 @@ void PokerOfflineUi::initialisePlayerCardsSprites()
 	this->player1card1.setScale(1.5f, 1.5f);
 	sf::FloatRect cardRectangle = this->player1card1.getLocalBounds();
 	this->player1card1.setOrigin(cardRectangle.left + round(cardRectangle.width / 2.0f), cardRectangle.top + round(cardRectangle.height / 2.0f));
-	this->player1card1.setPosition((this->videomode.width / 2) - (this->videomode.width / 30), 700.f);
+	this->player1card1.setPosition((this->videomode.width / 2) - (this->videomode.width / 30), 900.f);
 
 	this->player1card2.setTexture(this->deck.backOfCardTexture);
 	this->player1card2.setScale(1.5f, 1.5f);
-	cardRectangle = this->player1card2.getLocalBounds();
 	this->player1card2.setOrigin(cardRectangle.left + round(cardRectangle.width / 2.0f), cardRectangle.top + round(cardRectangle.height / 2.0f));
-	this->player1card2.setPosition((this->videomode.width / 2) + (this->videomode.width / 30), 700.f);
+	this->player1card2.setPosition((this->videomode.width / 2) + (this->videomode.width / 30), 900.f);
+
+	this->player2card1.setTexture(this->deck.backOfCardTexture);
+	this->player2card1.setRotation(90.f);
+	this->player2card1.setScale(1.5f, 1.5f);
+	this->player2card1.setOrigin(cardRectangle.left + round(cardRectangle.width / 2.0f), cardRectangle.top + round(cardRectangle.height / 2.0f));
+	this->player2card1.setPosition(this->videomode.width / 30, 600.f);
+
+	this->player2card2.setTexture(this->deck.backOfCardTexture);
+	this->player2card2.setScale(1.5f, 1.5f);
+	this->player2card2.setRotation(90.f);
+	this->player2card2.setOrigin(cardRectangle.left + round(cardRectangle.width / 2.0f), cardRectangle.top + round(cardRectangle.height / 2.0f));
+	this->player2card2.setPosition(this->videomode.width / 30, 520.f);
+
+
+	this->player3card1.setTexture(this->deck.backOfCardTexture);
+	this->player3card1.setScale(1.5f, 1.5f);
+	this->player3card1.setRotation(90.f);
+	this->player3card1.setOrigin(cardRectangle.left + round(cardRectangle.width / 2.0f), cardRectangle.top + round(cardRectangle.height / 2.0f));
+	this->player3card1.setPosition(this->videomode.width / 30, 400.f);
+
+	this->player3card2.setTexture(this->deck.backOfCardTexture);
+	this->player3card2.setScale(1.5f, 1.5f);
+	this->player3card2.setRotation(90.f);
+	this->player3card2.setOrigin(cardRectangle.left + round(cardRectangle.width / 2.0f), cardRectangle.top + round(cardRectangle.height / 2.0f));
+	this->player3card2.setPosition(this->videomode.width / 30, 320.f);
+
+	this->player4card1.setTexture(this->deck.backOfCardTexture);
+	this->player4card1.setScale(1.5f, 1.5f);
+	this->player4card1.setRotation(270.f);
+	this->player4card1.setOrigin(cardRectangle.left + round(cardRectangle.width / 2.0f), cardRectangle.top + round(cardRectangle.height / 2.0f));
+	this->player4card1.setPosition(this->videomode.width - this->videomode.width / 30, 600.f);
+
+	this->player4card2.setTexture(this->deck.backOfCardTexture);
+	this->player4card2.setScale(1.5f, 1.5f);
+	this->player4card2.setRotation(270.f);
+	this->player4card2.setOrigin(cardRectangle.left + round(cardRectangle.width / 2.0f), cardRectangle.top + round(cardRectangle.height / 2.0f));
+	this->player4card2.setPosition(this->videomode.width - this->videomode.width / 30, 520.f);
+
 }
 
 void PokerOfflineUi::initialiseGeneralPlayButtons()
@@ -156,6 +193,12 @@ void PokerOfflineUi::renderGameObjects(sf::RenderTarget& target)
 	target.draw(this->communityCard5);
 	target.draw(this->player1card1);
 	target.draw(this->player1card2);
+	target.draw(this->player2card1);
+	target.draw(this->player2card2);
+	target.draw(this->player3card1);
+	target.draw(this->player3card2);
+	target.draw(this->player4card1);
+	target.draw(this->player4card2);
 	target.draw(this->pokerHandsButton);
 
 }
@@ -218,6 +261,7 @@ void PokerOfflineUi::updateMousePositions()
 }
 void PokerOfflineUi::update() {
 
+
 	this->pollEvents();
 
 	// Update mouse positions
@@ -225,4 +269,3 @@ void PokerOfflineUi::update() {
 
 	
 }
-

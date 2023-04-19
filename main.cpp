@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Game.h"
 #include "Deck.h"
+#include "Poker.h"
 
 
 
@@ -12,15 +13,17 @@
 
 void runGame()
 {
-    Game game;
-    while (game.isGameRunning())
-    {
-        //Update
-        game.update();
+    // Game game;
+    // while (game.isGameRunning())
+    // {
+    //     //Update
+    //     game.update();
 
-        //Render
-        game.render();
-    }
+    //     //Render
+    //     game.render();
+    // }
+    Poker poker;
+    
 }
 
 

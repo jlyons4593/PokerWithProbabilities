@@ -1,7 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Deck.h"
-class PokerOfflineUi
+#include "ObserverPattern.cpp"
+class PokerOfflineUi: public Observer
 {
 private:
 
@@ -33,12 +34,12 @@ private:
 	//Player Card Sprites
 	sf::Sprite player1card1;
 	sf::Sprite player1card2;
-	// sf::Sprite player2card1;
-	// sf::Sprite player2card2;
-	// sf::Sprite player3card1;
-	// sf::Sprite player3card2;
-	// sf::Sprite player4card1;
-	// sf::Sprite player4card2;
+	sf::Sprite player2card1;
+	sf::Sprite player2card2;
+	sf::Sprite player3card1;
+	sf::Sprite player3card2;
+	sf::Sprite player4card1;
+	sf::Sprite player4card2;
 	// sf::Sprite player5card1;
 	// sf::Sprite player5card2;
 	// sf::Sprite player6card1;
