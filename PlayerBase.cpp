@@ -27,24 +27,6 @@ void PlayerBase::initialiseVariables()
 
 }
 
-// int PlayerBase::makeDecision(int decision)
-// {
-    
-//     if (decision==1)
-//     {
-//         int chipsToBet;
-//         std::cout << "how many red tokens";
-//         std::cin >> chipsToBet;
-//         this->numChips = this->numChips - chipsToBet;
-
-//     return decision;
-//     }
-//     else{
-//         return decision;
-//     }
-
-    
-// }
 
 int PlayerBase::getChipsToBet(){
     return this->chipsToBet;

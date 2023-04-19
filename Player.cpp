@@ -1,5 +1,5 @@
 #include "Player.h"
-
+#include <iostream>
 int Player::makeDecision() {
     int decision = 1;
 
@@ -18,4 +18,11 @@ int Player::makeDecision() {
 
     
 
+}
+
+Player::Player(){
+
+}
+Player::~Player(){
+    
 }

@@ -13,7 +13,7 @@ private:
 // int m_greenChips;
 // int m_yellowChips;
 
-int numChips;
+
 
 //total number of chips player wishes to bet
 int m_redChipsToBet;
@@ -38,7 +38,10 @@ std::vector<Card> bestHand;
 public:
 void setNumberOfChips(int numberOfChips);
 
+int numChips;
+
 std::string name;
+
 
 virtual int makeDecision() = 0;
 

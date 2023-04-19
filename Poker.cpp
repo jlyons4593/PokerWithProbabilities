@@ -1,7 +1,9 @@
 #include "Poker.h"
 #include "PlayerBase.h"
-#include "Ai.h"
+#include "AI.h"
 #include "Player.h"
+#include "Strategy.h"
+#include "SimpleStrategies.h"
 #include <algorithm>
 #include <iostream>
 
@@ -37,13 +39,20 @@ void Poker::initializePlayers(){
     Player player;
     player.name = "User";
     this->players.push_back(&player);
-    for (int i = 0; i < this->m_numOfPlayers; i++)
-    {
-        PlayerBase* AIPtr = new AI();
-        AIPtr->name = "Player"+std::to_string(i);
-        this->players.push_back(AIPtr);
 
-    }
+    
+    std::unique_ptr<Strategy> myStrategy = std::make_unique<RandomStrategy>();
+    AI myAI(std::move(myStrategy));
+
+    // for (int i = 0; i < this->m_numOfPlayers; i++)
+    // {
+    //     std::unique_ptr<Strategy> myStrategy = std::make_unique<RandomStrategy>();
+
+    //     PlayerBase* AIPtr = new AI(std::move(myStrategy));
+    //     AIPtr->name = "Player"+std::to_string(i);
+    //     this->players.push_back(AIPtr);
+
+    // }
     this->playersInHand = this->players;
 }
 
@@ -78,13 +87,20 @@ void Poker::setPlayerCards()
 
 void Poker::setPlayerBlinds()
 {
+    
     bool bigBlindPaid = false;
     bool smallBlindPaid = false;
     int player = this->blindCounter%this->playersInHand.size();
-
+    std::cout<<"here"<<std::endl;
+    for(auto& player: this->players){
+        std::cout<<player->name;
+    }
+    
     bigBlindPaid = this->players[this->blindCounter]->payBlind(25);
-    smallBlindPaid = this->players[this->blindCounter+1]->payBlind(10);
+    std::cout<<"here"<<std::endl;
 
+    smallBlindPaid = this->players[this->blindCounter+1]->payBlind(10);
+    
     if (bigBlindPaid&&smallBlindPaid) return;
 
     std::cout<< "Player "<< player<< " has payed the big blinds"<< std::endl;
@@ -117,11 +133,11 @@ void Poker::hand(){
         while (!this->playersAreReady)
         {
             std::cout<< "beginning of betting round"<< std::endl;
-            for (int j=0; j<this->m_numOfPlayers; j++){
+            for (int j=0; j<this->playersInHand.size(); j++){
                 std::vector<Card> cards=this->players[j]->getCards();
                 // std::cout << std::to_string((int)cards[0].value)<<" "<< std::to_string((int)cards[1].value)<< std::endl;
                 
-                int decision = players[j]->makeDecision(1);
+                int decision = this->players[j]->makeDecision();
                 if (decision == 1)
                 {
                     int chipsBet = players[j]->getChipsToBet();
@@ -340,7 +356,7 @@ bool Poker::isPair(PlayerBase *player){
 
 std::vector<PlayerBase*> Poker::determineHandWinner(){
     
-    std::vector<Player*> topPlayerHands;  
+    std::vector<PlayerBase*> topPlayerHands;  
 
     std::cout<< "determineHandWinner"<<std::endl;
 
