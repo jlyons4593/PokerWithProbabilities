@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Game.h"
 #include "Deck.h"
+#include "Poker.h"
 
 
 
@@ -21,6 +22,8 @@ void runGame()
         //Render
         game.render();
     }
+    // Poker poker;
+    
 }
 
 

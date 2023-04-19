@@ -234,6 +234,38 @@ void Deck::loadCardTextures()
 	Deck::cardFaces.push_back(textureKingOfHearts);
 }
 
+
+void Deck::createChips()
+{
+	//redChip
+	Chip redChip;
+	redChip.chipImage.loadFromFile("Resources/pokerchip1.png");
+	redChip.chipColor = "Red";
+	redChip.chipValue = 500;
+	this->chipSet.push_back(redChip);
+
+	//yellowChip
+	Chip yellowChip;
+	yellowChip.chipImage.loadFromFile("Resources/pokerchip4.png");
+	redChip.chipColor = "Yellow";
+	yellowChip.chipValue = 100;
+	this->chipSet.push_back(yellowChip);
+
+	//greenChip
+	Chip greenChip;
+	greenChip.chipImage.loadFromFile("Resources/pokerchip2.png");
+	redChip.chipColor = "Green";
+	greenChip.chipValue = 25;
+	this->chipSet.push_back(greenChip);
+	
+	//blueChip
+	Chip blueChip;
+	blueChip.chipImage.loadFromFile("Resources/pokerchip3.png");
+	redChip.chipColor = "Blue";
+	blueChip.chipValue = 10;
+	this->chipSet.push_back(blueChip);
+	
+}
 void Deck::initialiseDeck()
 {
 	this->loadCardTextures();
@@ -253,9 +285,8 @@ void Deck::initialiseDeck()
 			
 		}
 	}
-	
-	
 }
+
 Card Deck::drawCard()
 {
 	if (!Deck::currentDeck.empty())
@@ -276,4 +307,13 @@ void Deck::shuffleDeck()
 	std::random_device rd;
 	std::mt19937 g(rd());
 	shuffle(Deck::currentDeck.begin(), Deck::currentDeck.end(), g);
+}
+
+Deck::Deck()
+{
+	this->initialiseDeck();
+}
+Deck::~Deck()
+{
+	
 }

@@ -1,7 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Deck.h"
-class PokerOffline
+#include "ObserverPattern.cpp"
+class PokerOfflineUi: public Observer
 {
 private:
 
@@ -31,29 +32,29 @@ private:
 	sf::Sprite communityCard5;
 
 	//Player Card Sprites
-	//sf::Sprite player1card1;
-	//sf::Sprite player1card2;
-	//sf::Sprite player2card1;
-	//sf::Sprite player2card2;
-	//sf::Sprite player3card1;
-	//sf::Sprite player3card2;
-	//sf::Sprite player4card1;
-	//sf::Sprite player4card2;
-	//sf::Sprite player5card1;
-	//sf::Sprite player5card2;
-	//sf::Sprite player6card1;
-	//sf::Sprite player6card2;
-	//sf::Sprite player7card1;
-	//sf::Sprite player7card2;
-	//sf::Sprite player8card1;
-	//sf::Sprite player8card2;
+	sf::Sprite player1card1;
+	sf::Sprite player1card2;
+	sf::Sprite player2card1;
+	sf::Sprite player2card2;
+	sf::Sprite player3card1;
+	sf::Sprite player3card2;
+	sf::Sprite player4card1;
+	sf::Sprite player4card2;
+	// sf::Sprite player5card1;
+	// sf::Sprite player5card2;
+	// sf::Sprite player6card1;
+	// sf::Sprite player6card2;
+	// sf::Sprite player7card1;
+	// sf::Sprite player7card2;
+	// sf::Sprite player8card1;
+	// sf::Sprite player8card2;
 
 	//// General Play Buttons
 	////OddsView
 	//sf::RectangleShape oddsViewButton;
 	//sf::Text oddsViewText;
-	//sf::RectangleShape pokerHandsButton;
-	//sf::Text pokerHandsText;
+	sf::RectangleShape pokerHandsButton;
+	sf::Text pokerHandsText;
 
 	////Players buttons
 	//sf::RectangleShape raiseButton;
@@ -94,8 +95,8 @@ private:
 
 public:
 	//Constructor Destructor
-	PokerOffline();
-	virtual ~PokerOffline();
+	PokerOfflineUi();
+	virtual ~PokerOfflineUi();
 
 
 
