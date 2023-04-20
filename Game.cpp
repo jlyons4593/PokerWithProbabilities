@@ -2,8 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <cmath>
-#include "deck.h"
 #include "PokerOfflineUi.h"
+
 
 
 
@@ -13,6 +13,8 @@ void Game::initialiseVariables()
 	this->window = nullptr;
 	
 	this->lMBDown = false;
+
+
 
 	this->deckLoader();
 
@@ -239,6 +241,12 @@ void Game::processMenuChoices()
 		PokerOfflineUi newGame;
 		this->window->close();
 		
+		while (!newGame.hasStarted){
+			newGame.initialUpdate();
+
+			newGame.render();
+		}
+		std::cout << "out of initial loop" << std::endl;
 		while (newGame.isGameRunning())
 		{
 			//Update

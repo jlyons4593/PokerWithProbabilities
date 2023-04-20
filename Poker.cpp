@@ -5,6 +5,8 @@
 #include "Strategy.h"
 #include "SimpleStrategies.h"
 #include <algorithm>
+#include <thread>
+#include <chrono>
 #include <iostream>
 
 
@@ -36,24 +38,32 @@ void Poker::setCommunityCards()
 
 void Poker::initializePlayers(){
     // create player objects and add them to the players vector
+    std::cout<<"here"<<std::endl;
     Player player;
     player.name = "User";
     this->players.push_back(&player);
-
+    this->playersInHand.push_back(&player);
+    // std::unique_ptr<Strategy> myStrategy = std::make_unique<RandomStrategy>();
+    // AI myAI(std::move(myStrategy));
+    // this->players.push_back(&myAI);
     
-    std::unique_ptr<Strategy> myStrategy = std::make_unique<RandomStrategy>();
-    AI myAI(std::move(myStrategy));
+    for (int i = 0; i < this->m_numOfPlayers; i++)
+    {
+        std::cout<<i<<std::endl;
 
-    // for (int i = 0; i < this->m_numOfPlayers; i++)
-    // {
-    //     std::unique_ptr<Strategy> myStrategy = std::make_unique<RandomStrategy>();
+        if( i %2 ==0){
+            this->players.push_back(new AI(new RandomStrategy));
+            
+        }
+        else{
+            this->players.push_back(new AI(new HandStrengthStrategy));
+        }
+        this->playersInHand.push_back(players[i+1]);
 
-    //     PlayerBase* AIPtr = new AI(std::move(myStrategy));
-    //     AIPtr->name = "Player"+std::to_string(i);
-    //     this->players.push_back(AIPtr);
-
-    // }
+    }
+    std::cout<<this->playersInHand.size()<<std::endl;
     this->playersInHand = this->players;
+    std::cout<<this->players.size()<<std::endl;
 }
 
 void Poker::setPlayerCards()
@@ -121,6 +131,7 @@ void Poker::setPlayerBlinds()
 
 void Poker::hand(){
     std::cout<< "starting a Hand"<< std::endl;
+    return;
     this->setPlayerBlinds();
     std::cout<< "setting blinds"<< std::endl;
     this->setPlayerCards();
@@ -476,25 +487,37 @@ std::vector<PlayerBase*> Poker::determineHandWinner(){
 void Poker::fullGame()
 {
     
-    for(auto& player: this->players){
-        player->setNumberOfChips(this->moneyPerPlayer);
-    }
-   
-    while (this->players.size()>1)
-    {
-        this->hand();
+  
+    std::cout<<"numberOfchips set"<< std::endl;
+    this->hand();
+    // while (this->players.size()>1)
+    // {
+    //     this->hand();
     
-    }
-    std::cout<<"Match winner = "<<players[0]->name<<std::endl;
+    // }
+    std::cout<<"Match winner = "<<std::endl;
 
+
+}
+
+void Poker::startGame(){
+    std::cout<<this->playersInHand.size()<<std::endl;
+    std::cout<<"Testing"<< std::endl;
+    std::cout<<"shid"<<std::endl;
+    std::cout<< "num of players = "<< this->players.size()<<std::endl;
+    for(auto& player: this->players){
+        std::cout<<"yo"<<std::endl;
+    }
 
 }
 Poker::Poker()
 {
     this->initializeVariables();
     this->initializePlayers();
-    this->fullGame();
+    std::cout<<this->playersInHand.size()<<std::endl;
+    std::cout<<"Poker"<<std::endl;
 }
+
 Poker::~Poker(){
 
 }

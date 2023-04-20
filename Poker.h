@@ -86,10 +86,12 @@ bool isPair(PlayerBase *player);
 void removePlayerFromHand(PlayerBase* player);
 
 
+
 void fullGame();
 
 public:
 //Constructors and Destructors
+void startGame();
 
 Poker();
 ~Poker();

@@ -1,7 +1,16 @@
+#ifndef OBSERVER_PATTERN_CPP
+#define OBSERVER_PATTERN_CPP
+
+
 #include <vector>
 class Observer {
 public:
-    virtual void update() = 0;
+
+    virtual void startGame() = 0;
+    virtual void endGame() = 0;
+    virtual void updateOnBet() = 0;
+    virtual void updateCommunityCards() = 0;
+    virtual void updatePlayerCards() = 0;
 };
 
 class Subject {
@@ -14,9 +23,16 @@ public:
     void detach(Observer* observer) {
         observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
     }
-    void notify() {
+    void notifyGameStart() {
         for (auto& observer : observers) {
-            observer->update();
+            observer->startGame();
+        }
+    }
+    void notifyGameOver(){
+        for (auto &observer : observers)
+        {
+            observer->endGame();
         }
     }
 };
+#endif // OBSERVER_PATTERN_CPP

@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include "Deck.h"
 #include "ObserverPattern.cpp"
+#include "Poker.h"
+#include <thread>
 class PokerOfflineUi: public Observer
 {
 private:
@@ -62,6 +64,8 @@ private:
 	//sf::RectangleShape checkButton;
 	//sf::Text checkButtonText;
 
+	sf::Text gameStateText;
+	sf::RectangleShape gameStateRect;
 
 	Deck deck;
 
@@ -73,11 +77,14 @@ private:
 	//Font
 	sf::Font font;
 
-	
+	void launchPoker();
 	//game logic
 	int potAmount;
 
+	
+	
 	//private functions
+
 	void initialiseVariables();
 	void initialiseWindow();
 	void initialiseMenuBar();
@@ -86,20 +93,32 @@ private:
 	void initialisePlayerCardsSprites();
 	void initialiseGeneralPlayButtons();
 	void initialisePlayerButtons();
+	void initialiseGameStateButton();
 	void renderText(sf::RenderTarget& target);
 	void renderGameObjects(sf::RenderTarget& target);
 	void updateMousePositions();
 	void pollEvents();
+	void processStartingClick();
 	
 
+	Poker* pokerGame;
+
+	std::thread t1;
 
 public:
 	//Constructor Destructor
 	PokerOfflineUi();
 	virtual ~PokerOfflineUi();
 
+	//override functions from observer
+    void startGame() override;
+    void endGame() override;
+    void updateOnBet() override;
+	void updateCommunityCards() override;
+ 	void updatePlayerCards() override;
 
-
+	bool hasStarted;
+	void initialUpdate();
 	void render();
 	void update();
 	const bool isGameRunning() const;

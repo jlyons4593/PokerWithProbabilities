@@ -3,13 +3,11 @@
 #include "AI.h"
 
 
-AI::AI(std::unique_ptr<Strategy> strategy) : strategy_(std::move(strategy)){}
+AI::AI(Strategy* strategy) : strategy_(strategy){}
 
 int AI::makeDecision(){
     return strategy_->makeDecision();
 }
 
-void AI::setStrategy(std::unique_ptr<Strategy> strategy) {
-    strategy_ = std::move(strategy);
-}
+
 

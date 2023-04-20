@@ -1,14 +1,26 @@
 #include "PokerOfflineUi.h"
+#include "Poker.h"
+#include <thread>
+#include <iostream>
+#include "ObserverPattern.cpp"
+#include "utils.hpp"
 
 void PokerOfflineUi::initialiseVariables()
 {
 	this->window = nullptr;
 	this->potAmount = 0;
 	this->lMBDown = false;
-
+	this->hasStarted=false;
 	this->deck.initialiseDeck();	
+
 	
 
+}
+void PokerOfflineUi::launchPoker()
+{
+	Poker poker;
+	this->pokerGame = &poker;
+	poker.attach(this);
 }
 
 void PokerOfflineUi::initialiseWindow() 
@@ -170,11 +182,71 @@ void PokerOfflineUi::initialiseGeneralPlayButtons()
 
 }
 
+//Overriding observer functions
+void PokerOfflineUi::startGame()
+{
+	
+	this->gameStateText.setString("Starting game");
+	
+	this->gameStateText.setString("3");
+	this->render();
+	delay(1000);
+	this->gameStateText.setString("2");
+	this->render();
+	delay(1000);
+	this->gameStateText.setString("1");
+	this->render();
+	delay(1000);
+
+	this->gameStateRect.setFillColor(sf::Color::Transparent);
+	this->gameStateText.setFillColor(sf::Color::Transparent);
+	
+	delay(1000);
+	this->gameStateText.setFillColor(sf::Color::Black);
+	this->gameStateText.setString("Hand being dealt");
+	this->hasStarted = true;
+	this->pokerGame->startGame();
+}
+void PokerOfflineUi::endGame()
+{
+
+}
+void PokerOfflineUi::updateOnBet()
+{
+
+}
+void PokerOfflineUi::updateCommunityCards()
+{
+
+}
+void PokerOfflineUi::updatePlayerCards()
+{
+
+}
+
+
 void PokerOfflineUi::initialisePlayerButtons()
 {
 }
 
+void PokerOfflineUi::initialiseGameStateButton()
+{
+	//start game rectangle
+	this->gameStateRect.setFillColor(sf::Color::Red);
+	this->gameStateRect.setSize(sf::Vector2f(this->videomode.width/12, this->videomode.height/20));
+	sf::FloatRect pokerHandsRectangle = this->gameStateRect.getLocalBounds();
+	this->gameStateRect.setOrigin(pokerHandsRectangle.left + round(pokerHandsRectangle.width / 2.0f), pokerHandsRectangle.top + round(pokerHandsRectangle.height / 2.0f));
+	this->gameStateRect.setPosition(this->videomode.width/2, this->videomode.height/2);
 
+	//Start game Text
+	this->gameStateText.setString("Start Game");
+	this->gameStateText.setFillColor(sf::Color::White);
+	this->gameStateText.setFont(font);
+	this->gameStateText.setCharacterSize(int(this->videomode.width / 80));
+	pokerHandsRectangle = this->gameStateText.getLocalBounds();
+	this->gameStateText.setOrigin(pokerHandsRectangle.left + round(pokerHandsRectangle.width / 2.0f), pokerHandsRectangle.top + round(pokerHandsRectangle.height / 2.0f));
+	this->gameStateText.setPosition(this->gameStateRect.getPosition());
+}
 
 void PokerOfflineUi::renderText(sf::RenderTarget& target)
 {
@@ -182,6 +254,7 @@ void PokerOfflineUi::renderText(sf::RenderTarget& target)
 	target.draw(this->settings);
 	target.draw(this->instructions);
 	target.draw(this->pokerHandsText);
+	target.draw(this->gameStateText);
 }
 
 void PokerOfflineUi::renderGameObjects(sf::RenderTarget& target)
@@ -200,6 +273,7 @@ void PokerOfflineUi::renderGameObjects(sf::RenderTarget& target)
 	target.draw(this->player4card1);
 	target.draw(this->player4card2);
 	target.draw(this->pokerHandsButton);
+	target.draw(this->gameStateRect);
 
 }
 void PokerOfflineUi::render()
@@ -220,6 +294,29 @@ void PokerOfflineUi::render()
 const bool PokerOfflineUi::isGameRunning() const
 {
 	return this->window->isOpen();
+}
+
+void PokerOfflineUi::processStartingClick(){
+	//check if clicked
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+	{
+		if (!this->lMBDown) 
+		{
+			this->lMBDown = true;
+			if (this->gameStateRect.getGlobalBounds().contains(this->mousePositionFloat))
+			{
+				this->startGame();
+				
+			}
+			
+		}
+		
+		
+	}
+	else
+	{
+		this->lMBDown = false;
+	}
 }
 
 
@@ -243,8 +340,12 @@ PokerOfflineUi::PokerOfflineUi()
 	this->initialiseVariables();
 	this->initialiseWindow();
 	this->initialiseMenuBar();
+	this->initialiseGameStateButton();
 	this->initialisePlayScreenObjects();
-
+	this->launchPoker();
+	// this->t1 = std::thread(&PokerOfflineUi::launchPoker, this);
+	// std::cout<<"UI"<<std::endl;
+	// this->t1.join();
 
 }
 
@@ -259,6 +360,17 @@ void PokerOfflineUi::updateMousePositions()
 	this->mousePositionInt = sf::Mouse::getPosition(*this->window);
 	this->mousePositionFloat = this->window->mapPixelToCoords(this->mousePositionInt);
 }
+void PokerOfflineUi::initialUpdate(){
+	this->pollEvents();
+
+	// Update mouse positions
+	this->updateMousePositions();
+	
+	this->processStartingClick();
+
+	
+}
+	
 void PokerOfflineUi::update() {
 
 
@@ -266,6 +378,8 @@ void PokerOfflineUi::update() {
 
 	// Update mouse positions
 	this->updateMousePositions();
+	
+
 
 	
 }
