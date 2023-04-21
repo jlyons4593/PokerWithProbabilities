@@ -11,7 +11,7 @@ void PokerOfflineUi::initialiseVariables()
 	this->potAmount = 0;
 	this->lMBDown = false;
 	this->hasStarted=false;
-	this->deck.initialiseDeck();	
+	
 
 	
 
@@ -219,9 +219,13 @@ void PokerOfflineUi::updateCommunityCards()
 {
 
 }
-void PokerOfflineUi::updatePlayerCards()
+void PokerOfflineUi::updatePlayerCards(std::vector<Card>& cards)
 {
+	std::cout<<(int)cards[0].value<< " poo " << (int)cards[1].value<< std::endl;
 
+	// this->player1card1.setTexture(this->deck.currentDeck[0].cardFace);
+	this->player1card2.setTexture(cards[1].cardFace);
+	this->player1card1.setTexture(cards[0].cardFace);
 }
 
 

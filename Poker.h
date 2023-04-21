@@ -56,12 +56,14 @@ std::vector<PlayerBase*> playersInHand;
 // int numOfBlueChips;
 
 
-enum States{
-    notStarted,
-    startHand,
-    flop,
-    turn,
-    river,
+enum GameState{
+    GameStart,
+    Preflop,
+    Flop,
+    Turn,
+    River,
+    ShowDown,
+    GameOver
 };
 
 
@@ -110,7 +112,7 @@ void fullGame();
 void startHandState();
 
 public:
-States currentState;
+GameState currentState;
 //Constructors and Destructors
 void startGame();
 
@@ -118,6 +120,7 @@ void flopState();
 void turnState();
 void riverState();
 
+void testFunc();
 
 Poker();
 ~Poker();

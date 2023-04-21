@@ -115,7 +115,7 @@ public:
     void endGame() override;
     void updateOnBet() override;
 	void updateCommunityCards() override;
- 	void updatePlayerCards() override;
+ 	void updatePlayerCards(std::vector<Card>& cards) override;
 
 	bool hasStarted;
 	void initialUpdate();

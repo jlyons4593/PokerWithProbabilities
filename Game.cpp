@@ -23,15 +23,9 @@ void Game::initialiseVariables()
 void Game::deckLoader() {
 	// Creating deck instance
 	
-	this->deck.initialiseDeck();
+	
 
-	/*Card c = this->deck.drawCard();
-	Card b = this->deck.drawCard();
-	std::cout << (int)c.value << " of " << (int)c.suit << std::endl;
-	std::cout << int(b.value) << " of " << (int)b.suit << std::endl;
-	this->deck.shuffleDeck();
-	Card d = this->deck.drawCard();
-	std::cout << (int)d.value << " of " << (int)d.suit << std::endl;*/
+
 }
 
 void Game::initialiseWindow()

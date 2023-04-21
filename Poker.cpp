@@ -18,9 +18,12 @@ void Poker::initializeVariables()
     this->blindCounter=0;
     this->playersAreReady = false;
     this->m_numOfPlayers = 4;
-    this->m_currentDeck.shuffleDeck();
     
-    this->currentState = (States)notStarted;
+    
+  
+    this->m_currentDeck.shuffleDeck();
+
+    this->currentState = GameState::GameStart;
    
 
 }
@@ -43,7 +46,7 @@ void Poker::initializePlayers(){
     // create player objects and add them to the players vector
     std::cout<<"here"<<std::endl;
     Player* player = new Player();
-    player->setName("User");
+    player->setName("Joe");
     this->players.push_back(player);
  
     // std::unique_ptr<Strategy> myStrategy = std::make_unique<RandomStrategy>();
@@ -63,6 +66,7 @@ void Poker::initializePlayers(){
         }
         this->players[i + 1]->setName("AI" + std::to_string(i+1));
 
+
     }
     std::cout<<this->playersInHand.size()<<std::endl;
     this->playersInHand = this->players;
@@ -76,23 +80,24 @@ void Poker::setPlayerCards()
     {
 
         Card test1 = this->m_currentDeck.drawCard();
-        std::cout<<std::to_string((int)test1.value)<<std::endl;
+        // std::cout<<std::to_string((int)test1.value)<<std::endl;
         cards.push_back(test1);
 
         Card test2 = this->m_currentDeck.drawCard();
-        std::cout<<std::to_string((int)test2.value)<<std::endl;
+        // std::cout<<std::to_string((int)test2.value)<<std::endl;
         cards.push_back(test2);
         std::cout<<(int)cards[0].value << " " <<(int)cards[1].value << " player "<< i << std::endl;
         this->players[i]->setCards(cards);
+        if ( this->players[i]->getName()=="Joe"){
+            std::cout<<"Joe"<<std::endl;
+            this->notifyUpdatePlayersCards(cards);
+            std::cout<<"Joe"<<std::endl;
+        }
         cards.clear();
     }
 
 
-    for (auto player: this->players){
-        std::cout<<player<<std::endl;
-        std::vector<Card> tester = player->getCards();
-        std::cout<< (int)tester[0].value<< " "<< (int)tester[1].value<< std::endl;
-    }
+    
 } 
 
 
@@ -532,9 +537,19 @@ void Poker::startGame()
         player->setNumberOfChips(this->chipsPerPlayer);
         std::cout<<player->getNumberOfChips()<<std::endl;
     }
+    this->currentState = static_cast<GameState>(this->currentState + 1); 
+    this->startHandState();
+    
 
-    // this->startHand();
+}
 
+void Poker::testFunc()
+{
+    for (auto player: this->players){
+        std::cout<<player<<std::endl;
+        std::vector<Card> tester = player->getCards();
+        std::cout<< (int)tester[0].value<< " "<< (int)tester[1].value<< std::endl;
+    }
 }
 
 Poker::Poker()

@@ -1,7 +1,8 @@
 #ifndef OBSERVER_PATTERN_CPP
 #define OBSERVER_PATTERN_CPP
 
-
+#include "Deck.h"
+#include <iostream>
 #include <vector>
 class Observer {
 public:
@@ -10,7 +11,8 @@ public:
     virtual void endGame() = 0;
     virtual void updateOnBet() = 0;
     virtual void updateCommunityCards() = 0;
-    virtual void updatePlayerCards() = 0;
+    virtual void updatePlayerCards(std::vector<Card>& cards) = 0;
+    
 };
 
 class Subject {
@@ -34,5 +36,15 @@ public:
             observer->endGame();
         }
     }
+    void notifyUpdatePlayersCards(std::vector<Card> cards){
+        std::cout<<"here"<<std::endl;
+        for( auto& observer: observers){
+            std::cout<<"observer loop"<<std::endl;
+            observer->updatePlayerCards(cards);
+            std::cout<<"player cards updated"<< std::endl;
+
+        }
+    }
+    
 };
 #endif // OBSERVER_PATTERN_CPP
