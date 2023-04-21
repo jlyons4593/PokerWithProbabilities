@@ -27,7 +27,13 @@ void PlayerBase::initialiseVariables()
 
 }
 
+void PlayerBase::setName(std::string name){
+    this->name = name;
+}
 
+std::string PlayerBase::getName(){
+    return this->name;
+}
 int PlayerBase::getChipsToBet(){
     return this->chipsToBet;
 }
@@ -35,14 +41,18 @@ int PlayerBase::getChipsToBet(){
 bool PlayerBase::payBlind(int amount){
     std::cout<< "number of red chips = "<< this->numChips << std::endl;
     if (amount > this->numChips){
+        
         return false;
     }
     else{
+        this->numChips = this->numChips - amount;
         return true;
     }
     
 }
-
+int PlayerBase::getNumberOfChips(){
+    return this->numChips;
+}
 void PlayerBase::setBestHand(std::vector<Card>& cards){
     this->bestHand = cards;
 }

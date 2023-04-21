@@ -32,16 +32,19 @@ int chipsToBet;
 
 std::vector<Card> bestHand;
 
-
-
+int numChips;
+std::string name;
 
 public:
 void setNumberOfChips(int numberOfChips);
 
-int numChips;
 
-std::string name;
 
+int getNumberOfChips();
+
+void setName(std::string name);
+
+std::string getName();
 
 virtual int makeDecision() = 0;
 

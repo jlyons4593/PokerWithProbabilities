@@ -18,9 +18,9 @@ void PokerOfflineUi::initialiseVariables()
 }
 void PokerOfflineUi::launchPoker()
 {
-	Poker poker;
-	this->pokerGame = &poker;
-	poker.attach(this);
+
+	this->pokerGame = new Poker();
+	this->pokerGame->attach(this);
 }
 
 void PokerOfflineUi::initialiseWindow() 

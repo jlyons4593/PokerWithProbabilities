@@ -1,7 +1,7 @@
 #include "Poker.h"
 #include "PlayerBase.h"
 #include "AI.h"
-#include "Player.h"
+
 #include "Strategy.h"
 #include "SimpleStrategies.h"
 #include <algorithm>
@@ -14,11 +14,13 @@ void Poker::initializeVariables()
 {
     
 
-    this->moneyPerPlayer = 1500;
+    this->chipsPerPlayer = 1500;
     this->blindCounter=0;
     this->playersAreReady = false;
     this->m_numOfPlayers = 4;
     this->m_currentDeck.shuffleDeck();
+    
+    this->currentState = (States)notStarted;
    
 
 }
@@ -37,12 +39,13 @@ void Poker::setCommunityCards()
 }
 
 void Poker::initializePlayers(){
+  
     // create player objects and add them to the players vector
     std::cout<<"here"<<std::endl;
-    Player player;
-    player.name = "User";
-    this->players.push_back(&player);
-    this->playersInHand.push_back(&player);
+    Player* player = new Player();
+    player->setName("User");
+    this->players.push_back(player);
+ 
     // std::unique_ptr<Strategy> myStrategy = std::make_unique<RandomStrategy>();
     // AI myAI(std::move(myStrategy));
     // this->players.push_back(&myAI);
@@ -58,7 +61,7 @@ void Poker::initializePlayers(){
         else{
             this->players.push_back(new AI(new HandStrengthStrategy));
         }
-        this->playersInHand.push_back(players[i+1]);
+        this->players[i + 1]->setName("AI" + std::to_string(i+1));
 
     }
     std::cout<<this->playersInHand.size()<<std::endl;
@@ -69,7 +72,7 @@ void Poker::initializePlayers(){
 void Poker::setPlayerCards()
 {
     std::vector<Card> cards;
-    for(int i=0; i<this->m_numOfPlayers; i++)
+    for(int i=0; i<this->playersInHand.size(); i++)
     {
 
         Card test1 = this->m_currentDeck.drawCard();
@@ -100,46 +103,43 @@ void Poker::setPlayerBlinds()
     
     bool bigBlindPaid = false;
     bool smallBlindPaid = false;
-    int player = this->blindCounter%this->playersInHand.size();
-    std::cout<<"here"<<std::endl;
-    for(auto& player: this->players){
-        std::cout<<player->name;
+    
+    //setting correct player indexes
+    int bigBlindPlayerIndex = this->blindCounter%this->playersInHand.size();
+    int smallBlindPlayerIndex = bigBlindPlayerIndex+1;
+
+    //adjusting small player index to be 0 if its bigger than the number of players in the hand
+    if (smallBlindPlayerIndex == this->playersInHand.size()) smallBlindPlayerIndex=0;
+
+    bigBlindPaid = this->players[bigBlindPlayerIndex]->payBlind(25);
+    if (bigBlindPaid)std::cout<<this->players[bigBlindPlayerIndex]<<" has paid blind";
+
+    smallBlindPaid = this->players[smallBlindPlayerIndex]->payBlind(10);
+    if (smallBlindPaid)std::cout<<this->players[smallBlindPlayerIndex]<<" has paid blind";
+
+    
+    if (bigBlindPaid&&smallBlindPaid) 
+    {
+        this->blindCounter++;
+        return;
     }
-    
-    bigBlindPaid = this->players[this->blindCounter]->payBlind(25);
-    std::cout<<"here"<<std::endl;
 
-    smallBlindPaid = this->players[this->blindCounter+1]->payBlind(10);
-    
-    if (bigBlindPaid&&smallBlindPaid) return;
-
-    std::cout<< "Player "<< player<< " has payed the big blinds"<< std::endl;
-    std::cout<< "Player "<< player+1<< " has payed the small blinds"<< std::endl;
-
-    if(!bigBlindPaid)this->removePlayerFromHand(this->players[this->blindCounter]);
-    if(!smallBlindPaid)this->removePlayerFromHand(this->players[this->blindCounter]);
-
-    this->blindCounter++;
-
+    if(!bigBlindPaid || !smallBlindPaid)
+    {
+        this->removePlayerFromHand(this->players[smallBlindPlayerIndex]);
+        this->setPlayerBlinds();
+    }
 }
 
-    void Poker::removePlayerFromHand(PlayerBase *player)
+void Poker::removePlayerFromHand(PlayerBase* player)
 {
-    std::cout<<"Player "<<player->name<< " is bankrupt"<< std::endl;
-    this->playersInHand.erase(std::remove(this->playersInHand.begin(), this->playersInHand.end(), player), this->playersInHand.end());;
+    std::cout<<"Player "<<player->getName()<< " is bankrupt"<< std::endl;
+    this->playersInHand.erase(std::remove(this->playersInHand.begin(), this->playersInHand.end(), player), this->playersInHand.end());
 }
 
 void Poker::hand(){
-    std::cout<< "starting a Hand"<< std::endl;
-    return;
-    this->setPlayerBlinds();
-    std::cout<< "setting blinds"<< std::endl;
-    this->setPlayerCards();
-    std::cout<< "setting player Cards"<< std::endl;
-    this->setCommunityCards();
-    std::cout<< "setting community cards"<< std::endl;
-    for (int i=0; i<4; i++)
-    {
+    
+    
         this->playersAreReady = false;
         while (!this->playersAreReady)
         {
@@ -157,21 +157,21 @@ void Poker::hand(){
                 }
                 else if (decision == 2){
                     this->removePlayerFromHand(this->playersInHand[j]);
-                    std::cout <<"player "<< this->playersInHand[j]->name << " has folded" <<std::endl;
+                    std::cout <<"player "<< this->playersInHand[j]->getName() << " has folded" <<std::endl;
                 }
             }
             this->playersAreReady = true;
         }
     std::cout << "The pot = " << this->pot<< std::endl;
         
-    }
+    
 
     std::cout<< "entering determined hand winners"<< std::endl;
 
     std::vector<PlayerBase*> winners = this->determineHandWinner();
 
     for (auto& winner : winners){
-        std::cout<< "winner = " << winner->name << std::endl;
+        std::cout<< "winner = " << winner->getName() << std::endl;
     }
     
 
@@ -374,7 +374,7 @@ std::vector<PlayerBase*> Poker::determineHandWinner(){
     int rank =-1;
     for(auto player: this->players)
     {
-        std::cout<< player->name << std::endl; 
+        std::cout<< player->getName() << std::endl; 
         if (this->isStraightFlush(player)){
             if (rank==8){
                 topPlayerHands.push_back(player);
@@ -500,16 +500,43 @@ void Poker::fullGame()
 
 }
 
-void Poker::startGame(){
-    std::cout<<this->playersInHand.size()<<std::endl;
+// Outline of order in which events will happened although called by the UI 
+// betting occurs in each of these steps
+// start hand 
+// Flop 
+// turn
+// river
+
+void Poker::startHandState()
+{
+    std::cout<< "starting a Hand"<< std::endl;
+ 
+    this->setPlayerBlinds();
+    
+    std::cout<< "setting blinds"<< std::endl;
+    this->setPlayerCards();
+    std::cout<< "setting player Cards"<< std::endl;
+    this->setCommunityCards();
+    std::cout<< "setting community cards"<< std::endl;
+
+}
+
+void Poker::startGame()
+{
+    
     std::cout<<"Testing"<< std::endl;
     std::cout<<"shid"<<std::endl;
     std::cout<< "num of players = "<< this->players.size()<<std::endl;
+    
     for(auto& player: this->players){
-        std::cout<<"yo"<<std::endl;
+        player->setNumberOfChips(this->chipsPerPlayer);
+        std::cout<<player->getNumberOfChips()<<std::endl;
     }
 
+    // this->startHand();
+
 }
+
 Poker::Poker()
 {
     this->initializeVariables();

@@ -13,16 +13,17 @@
 
 void runGame()
 {
-    Game game;
-    while (game.isGameRunning())
-    {
-        //Update
-        game.update();
+    // Game game;
+    // while (game.isGameRunning())
+    // {
+    //     //Update
+    //     game.update();
 
-        //Render
-        game.render();
-    }
-    // Poker poker;
+    //     //Render
+    //     game.render();
+    // }
+    Poker poker;
+    poker.startGame();
     
 }
 

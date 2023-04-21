@@ -5,6 +5,8 @@
 #include "ObserverPattern.cpp"
 #include <vector>
 #include <algorithm>
+#include <array>
+#include "Player.h"
 
 class Poker: public Subject{
 private:
@@ -36,15 +38,32 @@ Card communityCard3;
 Card communityCard4;
 Card communityCard5;
 
+//player variables 
+PlayerBase* player;
+PlayerBase* AI1;
+PlayerBase* AI2;
+PlayerBase* AI3;
+PlayerBase* AI4;
+
 //players vector
 std::vector<PlayerBase*> players;
 std::vector<PlayerBase*> playersInHand;
 
 //chip variables
-int numOfRedChips;
-int numOfYellowChips;
-int numOfGreenChips;
-int numOfBlueChips;
+// int numOfRedChips;
+// int numOfYellowChips;
+// int numOfGreenChips;
+// int numOfBlueChips;
+
+
+enum States{
+    notStarted,
+    startHand,
+    flop,
+    turn,
+    river,
+};
+
 
 
 //blind logic
@@ -56,7 +75,7 @@ int smallBlind;
 // pot
 int pot;
 
-int moneyPerPlayer;
+int chipsPerPlayer;
 
 bool playersAreReady;
 
@@ -88,10 +107,17 @@ void removePlayerFromHand(PlayerBase* player);
 
 
 void fullGame();
+void startHandState();
 
 public:
+States currentState;
 //Constructors and Destructors
 void startGame();
+
+void flopState();
+void turnState();
+void riverState();
+
 
 Poker();
 ~Poker();

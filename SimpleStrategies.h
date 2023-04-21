@@ -5,6 +5,7 @@ class HandStrengthStrategy : public Strategy {
 public:
     int makeDecision() override {
         // implementation for an aggressive strategy
+        
     }
 };
 
