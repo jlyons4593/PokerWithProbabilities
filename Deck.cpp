@@ -282,7 +282,7 @@ void Deck::initialiseDeck()
 			
 			c.cardFace = this->cardFaces[counter];
 			this->currentDeck.push_back(c);
-
+			c.index = counter;
 			counter++;
 			
 		}

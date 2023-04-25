@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include <array>
+#include "utils.hpp"
 #include "Player.h"
 
 class Poker: public Subject{
@@ -56,15 +57,7 @@ std::vector<PlayerBase*> playersInHand;
 // int numOfBlueChips;
 
 
-enum GameState{
-    GameStart,
-    Preflop,
-    Flop,
-    Turn,
-    River,
-    ShowDown,
-    GameOver
-};
+
 
 
 
@@ -77,7 +70,9 @@ int smallBlind;
 // pot
 int pot;
 
-int chipsPerPlayer;
+//bettingstate logic
+
+
 
 bool playersAreReady;
 
@@ -105,20 +100,36 @@ bool isPair(PlayerBase *player);
 //bankrupt Player logic
 
 void removePlayerFromHand(PlayerBase* player);
+void incrementState();
 
-
+void changeState();
 
 void fullGame();
 void startHandState();
 
 public:
+enum GameState{
+    GameStart,
+    Preflop,
+    Flop,
+    Turn,
+    River,
+    ShowDown,
+    GameOver
+};
+
+int chipsPerPlayer;
+
 GameState currentState;
 //Constructors and Destructors
-void startGame();
 
+void startGame();
+void preFlop();
 void flopState();
 void turnState();
 void riverState();
+void bettingState();
+void showDownState();
 
 void testFunc();
 

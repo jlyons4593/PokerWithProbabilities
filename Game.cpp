@@ -2,7 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <cmath>
+
 #include "PokerOfflineUi.h"
+#include "PokerOfflineUiSingleton.h"
 
 
 
@@ -232,22 +234,24 @@ void Game::processMenuChoices()
 	}
 	else if (this->playVsAi.getGlobalBounds().contains(this->mousePositionFloat))
 	{
-		PokerOfflineUi newGame;
+		PokerOfflineUiSingleton& singleton = PokerOfflineUiSingleton::getInstance();
+		PokerOfflineUi* newGame = singleton.getPokerOfflineUi();
 		this->window->close();
 		
-		while (!newGame.hasStarted){
-			newGame.initialUpdate();
+		while (!newGame->hasStarted){
+			newGame->initialUpdate();
 
-			newGame.render();
+			newGame->render();
 		}
-		std::cout << "out of initial loop" << std::endl;
-		while (newGame.isGameRunning())
+		newGame->startBetting();
+
+		while (newGame->isGameRunning())
 		{
 			//Update
-			newGame.update();
+			newGame->update();
 
 			//Render
-			newGame.render();
+			newGame->render();
 		}
 
 		std::cout << "User chose play vs AI" << std::endl;

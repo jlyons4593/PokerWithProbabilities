@@ -1,9 +1,17 @@
 #include "PlayerBase.h"
-
+#ifndef PLAYER_H
+#define PLAYER_H
 class Player : public PlayerBase{
 public:
-    int makeDecision() override;
-
+    Decision makeDecision(int currentBet) override;
+    bool done;
+    
     Player();
     ~Player();
+private:
+
+
 };
+
+
+#endif // PLAYER_H

@@ -3,8 +3,9 @@
 // AggressiveStrategy.h
 class HandStrengthStrategy : public Strategy {
 public:
-    int makeDecision() override {
+    Decision makeDecision(int currentBet) override {
         // implementation for an aggressive strategy
+        return Decision::Raise;
         
     }
 };
@@ -12,7 +13,8 @@ public:
 // ConservativeStrategy.h
 class RandomStrategy : public Strategy {
 public:
-    int makeDecision() override {
+    Decision makeDecision(int currentBet) override {
         // implementation for a conservative strategy
+        return Decision::Call;
     }
 };

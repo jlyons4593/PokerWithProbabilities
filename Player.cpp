@@ -1,24 +1,37 @@
 #include "Player.h"
 #include <iostream>
-int Player::makeDecision() {
-    // int decision = 1;
+#include "utils.hpp"
+#include "PokerOfflineUi.h"
+#include "PokerOfflineUiSingleton.h"
+Decision Player::makeDecision(int currentBet) {
+    std::cout<<"frick";
+    
+    PokerOfflineUiSingleton& singleton = PokerOfflineUiSingleton::getInstance();
+    PokerOfflineUi* ui = singleton.getPokerOfflineUi();
+    ui->resetReadyAndDecision();
+    
 
-    // if (decision==1)
-    // {
-    //     int chipsToBet;
-    //     std::cout << "how many red tokens";
-    //     std::cin >> chipsToBet;
-    //     this->numChips = this->numChips - chipsToBet;
+    Decision decision= ui->waitForPlayerDecision(currentBet);
+    
+   
 
-    // return decision;
-    // }
-    // else{
-    //     return decision;
-    // }
+    
+    // code to display the UI and wait for user input
+    // when user input is received, set the result and signal the condition variable
+    // the signal will wake up the thread that is waiting for the result
+    // make sure to lock the mutex before modifying the shared variables
+    // and unlock it before waiting on the condition variable
+
+  
+
+    
+    return decision;
+
 
     
 
 }
+
 
 Player::Player(){
 

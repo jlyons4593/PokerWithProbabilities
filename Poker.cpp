@@ -19,8 +19,6 @@ void Poker::initializeVariables()
     this->playersAreReady = false;
     this->m_numOfPlayers = 4;
     
-    
-  
     this->m_currentDeck.shuffleDeck();
 
     this->currentState = GameState::GameStart;
@@ -47,6 +45,7 @@ void Poker::initializePlayers(){
     std::cout<<"here"<<std::endl;
     Player* player = new Player();
     player->setName("Joe");
+    this->setPlayer(player);
     this->players.push_back(player);
  
     // std::unique_ptr<Strategy> myStrategy = std::make_unique<RandomStrategy>();
@@ -80,6 +79,7 @@ void Poker::setPlayerCards()
     {
 
         Card test1 = this->m_currentDeck.drawCard();
+        
         // std::cout<<std::to_string((int)test1.value)<<std::endl;
         cards.push_back(test1);
 
@@ -91,6 +91,7 @@ void Poker::setPlayerCards()
         if ( this->players[i]->getName()=="Joe"){
             std::cout<<"Joe"<<std::endl;
             this->notifyUpdatePlayersCards(cards);
+            
             std::cout<<"Joe"<<std::endl;
         }
         cards.clear();
@@ -153,17 +154,17 @@ void Poker::hand(){
                 std::vector<Card> cards=this->players[j]->getCards();
                 // std::cout << std::to_string((int)cards[0].value)<<" "<< std::to_string((int)cards[1].value)<< std::endl;
                 
-                int decision = this->players[j]->makeDecision();
-                if (decision == 1)
-                {
-                    int chipsBet = players[j]->getChipsToBet();
-                    this->pot = this->pot + chipsBet;
+                // int decision = this->players[j]->makeDecision();
+                // if (decision == 1)
+                // {
+                //     int chipsBet = players[j]->getChipsToBet();
+                //     this->pot = this->pot + chipsBet;
 
-                }
-                else if (decision == 2){
-                    this->removePlayerFromHand(this->playersInHand[j]);
-                    std::cout <<"player "<< this->playersInHand[j]->getName() << " has folded" <<std::endl;
-                }
+                // }
+                // else if (decision == 2){
+                //     this->removePlayerFromHand(this->playersInHand[j]);
+                //     std::cout <<"player "<< this->playersInHand[j]->getName() << " has folded" <<std::endl;
+                // }
             }
             this->playersAreReady = true;
         }
@@ -522,10 +523,13 @@ void Poker::startHandState()
     this->setPlayerCards();
     std::cout<< "setting player Cards"<< std::endl;
     this->setCommunityCards();
+    
     std::cout<< "setting community cards"<< std::endl;
-
+    
 }
-
+void Poker::incrementState(){
+    this->currentState = static_cast<GameState>(this->currentState + 1); 
+}
 void Poker::startGame()
 {
     
@@ -537,12 +541,97 @@ void Poker::startGame()
         player->setNumberOfChips(this->chipsPerPlayer);
         std::cout<<player->getNumberOfChips()<<std::endl;
     }
-    this->currentState = static_cast<GameState>(this->currentState + 1); 
+    this->incrementState();
     this->startHandState();
     
 
 }
 
+
+void Poker::flopState()
+{
+    this->notifyUpdateCommunityCardsOnFlop(this->communityCard1, this->communityCard2, this->communityCard3);
+    this->bettingState();
+    
+    
+}
+void Poker::turnState()
+{
+    this->notifyUpdateCommunityCardsOnTurn(this->communityCard4);
+    this->bettingState();
+}
+void Poker::riverState()
+{
+    this->notifyUpdateCommunityCardsOnRiver(this->communityCard5);
+    this->bettingState();
+}
+void Poker::showDownState(){
+
+}
+void Poker::bettingState(){
+    bool bettingComplete;
+    int currentBetAmount;
+    std::cout<<"in bet state"<<std::endl;
+    // while(!bettingComplete)
+    // {
+        bool allPlayersChecked;
+        std::cout<<"in bet loop"<<std::endl;
+        for (auto& player : this->playersInHand)
+        {
+            std::cout<<"in main  loop of bets"<<std::endl;
+            Decision decision = player->makeDecision(currentBetAmount);
+            std::cout<<"decision made champ"<<std::endl;
+
+            if (decision == Decision::Fold) {
+                std::cout<<player->getName()<<" has folded"<<std::endl;
+                this->removePlayerFromHand(player);
+                this->notifyPlayerFolded(player->playerIndex);
+            }
+            else if (decision == Decision::Call){
+                std::cout<<player->getName()<<" has called"<<std::endl;
+                int chipsToAdd;
+                if(player->getChips(currentBetAmount)){
+                    this->notifyPlayerCall(player->playerIndex, currentBetAmount);
+                    chipsToAdd = currentBetAmount;
+                }
+                else{
+                    chipsToAdd = player->allIn();
+                    
+                    this->notifyPlayerAllIn(player->playerIndex);
+                }
+                this->pot += chipsToAdd;
+
+            
+            }
+            else if (decision == Decision::Check){
+                std::cout<<player->getName()<<" has checked"<<std::endl;
+                this->notifyPlayerCheck(player->playerIndex);
+            }
+            else if(decision == Decision::Raise){
+                std::cout<<player->getName()<<" has raised"<<std::endl;
+                int bet = player->getChipsToBet();
+                currentBetAmount = currentBetAmount+bet;
+                allPlayersChecked = false;
+            }
+            
+        }
+        std::cout<<"End of Betting"<<std::endl;
+    this->incrementState();
+    if(this->currentState ==GameState::Flop){
+        this->flopState();
+    }
+    else if(this->currentState ==GameState::Turn){
+        this->turnState();
+    }
+    else if(this->currentState ==GameState::River){
+        this->riverState();
+    }
+    else if(this->currentState ==GameState::ShowDown){
+        this->showDownState();
+    }
+    // if (allPlayersChecked) bettingComplete = true;
+    // }
+}
 void Poker::testFunc()
 {
     for (auto player: this->players){

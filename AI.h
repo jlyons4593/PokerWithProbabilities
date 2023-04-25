@@ -1,10 +1,11 @@
 #include "PlayerBase.h"
 #include "Strategy.h"
+#include "utils.hpp"
 
 
 class AI : public PlayerBase{
 public:
-    int makeDecision() override;
+    Decision makeDecision(int currentBet) override;
 
    
 

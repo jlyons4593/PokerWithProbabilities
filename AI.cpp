@@ -5,8 +5,8 @@
 
 AI::AI(Strategy* strategy) : strategy_(strategy){}
 
-int AI::makeDecision(){
-    return strategy_->makeDecision();
+Decision AI::makeDecision(int currentBet){
+    return strategy_->makeDecision(currentBet);
 }
 
 

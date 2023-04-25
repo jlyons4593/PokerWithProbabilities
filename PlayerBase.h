@@ -3,6 +3,9 @@
 #include "Deck.h"
 #include <vector>
 #include <array>
+#include "utils.hpp"
+
+
 
 class PlayerBase{
 private:
@@ -15,11 +18,7 @@ private:
 
 
 
-//total number of chips player wishes to bet
-int m_redChipsToBet;
-int m_blueChipsToBet;
-int m_greenChipsToBet;
-int m_yellowChipsToBet;
+
 
 
 Card m_card1;
@@ -38,21 +37,26 @@ std::string name;
 public:
 void setNumberOfChips(int numberOfChips);
 
+void setNumberOfChipsToBet(int chips);
 
+int playerIndex;
 
 int getNumberOfChips();
+
 
 void setName(std::string name);
 
 std::string getName();
 
-virtual int makeDecision() = 0;
+virtual Decision makeDecision(int currentBet) = 0;
 
 virtual bool payBlind(int amount);
 
+bool getChips(int chipAmount);
 
 void setCards(std::vector<Card>& cards);
 
+int allIn();
 
 std::vector<Card> getCards() const;
 

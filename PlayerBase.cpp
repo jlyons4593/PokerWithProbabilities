@@ -21,6 +21,9 @@ std::vector<Card> PlayerBase::getCards() const{
     return cards;
 }
 
+void PlayerBase::setNumberOfChipsToBet(int chips){
+    this->chipsToBet = chips;
+}
 
 void PlayerBase::initialiseVariables()
 {
@@ -29,6 +32,20 @@ void PlayerBase::initialiseVariables()
 
 void PlayerBase::setName(std::string name){
     this->name = name;
+}
+
+int PlayerBase::allIn(){
+    int x = this->numChips;
+    this->numChips = 0;
+    return x;
+}
+
+bool PlayerBase::getChips(int chipAmount){
+    if (this->numChips<chipAmount){
+        this->numChips -=chipAmount;
+        return true;
+    }
+    return false;
 }
 
 std::string PlayerBase::getName(){

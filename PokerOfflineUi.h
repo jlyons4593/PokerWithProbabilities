@@ -3,6 +3,9 @@
 #include "Deck.h"
 #include "ObserverPattern.cpp"
 #include "Poker.h"
+#include "utils.hpp"
+#include "Player.h"
+
 #include <thread>
 class PokerOfflineUi: public Observer
 {
@@ -58,14 +61,88 @@ private:
 	sf::RectangleShape pokerHandsButton;
 	sf::Text pokerHandsText;
 
-	////Players buttons
-	//sf::RectangleShape raiseButton;
-	//sf::Text raiseButtonText;
-	//sf::RectangleShape checkButton;
-	//sf::Text checkButtonText;
-
 	sf::Text gameStateText;
 	sf::RectangleShape gameStateRect;
+
+	sf::Text readyUpText;
+	sf::RectangleShape readyUpButton;
+
+	sf::Text foldText;
+	sf::RectangleShape foldButton;
+	bool hasFolded;
+
+	//betting buttons
+	sf::Text raiseText;
+	sf::RectangleShape raiseButton;
+
+	sf::Text raiseIncrementText;
+	sf::RectangleShape raiseIncrementButton;
+	
+	sf::Text raiseDecrementText;
+	sf::RectangleShape raiseDecrementButton;
+
+	sf::Text raiseDoubleIncrementText;
+	sf::RectangleShape raiseDoubleIncrementButton;
+
+	sf::Text raiseDoubleDecrementText;
+	sf::RectangleShape raiseDoubleDecrementButton;
+
+	sf::Text raiseAmount;
+	sf::RectangleShape raiseBox;
+	sf::String chipsRaisedString;
+
+	//Players Money
+	sf::Text playerChips;
+
+	sf::Text AIChips;
+	sf::Text AI2Chips;
+	sf::Text AI3Chips;
+	sf::Text AI4Chips;
+
+	std::vector<sf::Text> playerCash;
+
+	// Player Names
+	sf::Text playerName;
+	sf::Text AIName;
+	sf::Text AI2Name;
+	sf::Text AI3Name;
+	sf::Text AI4Name;
+
+	//Player statuses
+	sf::Text playerStatus;
+	sf::Text AIStatus;
+	sf::Text AI2Status;
+	sf::Text AI3Status;
+	sf::Text AI4Status;
+
+	std::vector<sf::Text> playerNames;
+	std::vector<sf::Text> statuses;
+
+	//PLayer chip amounts to display
+	int playerChipsInt;
+	int AIChipsInt;
+	int AI2ChipsInt;
+	int AI3ChipsInt;
+	int AI4ChipsInt;
+
+	std::vector<int> playerCashInt;
+
+	int playerBetAmount;
+
+	//Pot
+	sf::Text potText;
+	int potAmount;
+
+	//current betHigh
+	int groupHighBet;
+	int playerHighBet;
+
+	int chipsRaisedInt;
+	bool raiseBoxActive;
+	
+	// sf::Text checkButton;
+	// sf::RectangleShape checkButton;
+	bool keyDown;
 
 	Deck deck;
 
@@ -79,12 +156,14 @@ private:
 
 	void launchPoker();
 	//game logic
-	int potAmount;
+	
 
 	
 	
 	//private functions
+	void setPlayerChips(int chips);
 
+	void initialisePot();
 	void initialiseVariables();
 	void initialiseWindow();
 	void initialiseMenuBar();
@@ -92,16 +171,33 @@ private:
 	void initialiseCommunityCardSprites();
 	void initialisePlayerCardsSprites();
 	void initialiseGeneralPlayButtons();
-	void initialisePlayerButtons();
+	void initialisePlayerChips();
+	void initialiseReadyUpButton();
 	void initialiseGameStateButton();
+	void initialisePlayerStatuses();
+	void initialiseFoldButton();
+	void initialiseBettingObjects();
 	void renderText(sf::RenderTarget& target);
 	void renderGameObjects(sf::RenderTarget& target);
+	void updatePlayerUIs();
+	void updatePot();
 	void updateMousePositions();
+	void updatePlayerChips();
 	void pollEvents();
 	void processStartingClick();
+	void processPlayerChoices();
+	void processReadyUp();
 	
+	void processStateSwitch();
+
+	//reference to player object
+	Player* player;
+
+	bool readyUp;
 
 	Poker* pokerGame;
+
+	Decision decision;
 
 	std::thread t1;
 
@@ -113,9 +209,20 @@ public:
 	//override functions from observer
     void startGame() override;
     void endGame() override;
+	Decision waitForPlayerDecision(int currentBet);
+	void setPlayer(Player* player) override;
     void updateOnBet() override;
-	void updateCommunityCards() override;
- 	void updatePlayerCards(std::vector<Card>& cards) override;
+	void startBetting();
+	void resetReadyAndDecision();
+	void updateCommunityCardsOnFlop(Card& c1,Card& c2, Card& c3) override;
+	void updateCommunityCardsOnTurn(Card& card) override;
+	void updateCommunityCardsOnRiver(Card& card) override;
+ 	void updatePlayerCards(std::vector<Card> cards) override;
+	void foldPlayer(int playerIndex) override;
+	void raisePlayer(int playerIndex, int raiseAmount)override;
+	void checkPlayer(int playerIndex) override;
+	void callPlayer(int playerIndex, int chipAmount) override;
+	void allInPlayer(int playerIndex) override;
 
 	bool hasStarted;
 	void initialUpdate();
