@@ -9,6 +9,7 @@
 #include "utils.hpp"
 #include "Player.h"
 
+
 class Poker: public Subject{
 private:
 
@@ -72,7 +73,7 @@ int pot;
 
 //bettingstate logic
 
-
+int currentBetAmount;
 
 bool playersAreReady;
 

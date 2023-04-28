@@ -155,6 +155,17 @@ private:
 	sf::Font font;
 
 	void launchPoker();
+
+	//handling for displaying pokerHands
+
+	bool isLookingAtHands;
+
+	sf::Sprite pokerHandsSprite;
+	sf::Texture pokerHandsTexture;
+	sf::RectangleShape closePokerHandsButton;
+	sf::Text closePokerHandsText;
+
+
 	//game logic
 	
 
@@ -187,7 +198,7 @@ private:
 	void processStartingClick();
 	void processPlayerChoices();
 	void processReadyUp();
-	
+	void showPokerHands();
 	void processStateSwitch();
 
 	//reference to player object
@@ -223,6 +234,7 @@ public:
 	void checkPlayer(int playerIndex) override;
 	void callPlayer(int playerIndex, int chipAmount) override;
 	void allInPlayer(int playerIndex) override;
+	
 
 	bool hasStarted;
 	void initialUpdate();

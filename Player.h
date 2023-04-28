@@ -5,7 +5,7 @@ class Player : public PlayerBase{
 public:
     Decision makeDecision(int currentBet) override;
     bool done;
-    
+    void setPlayer();
     Player();
     ~Player();
 private:

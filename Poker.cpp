@@ -18,7 +18,7 @@ void Poker::initializeVariables()
     this->blindCounter=0;
     this->playersAreReady = false;
     this->m_numOfPlayers = 4;
-    
+    this->currentBetAmount = 0;
     this->m_currentDeck.shuffleDeck();
 
     this->currentState = GameState::GameStart;
@@ -40,12 +40,13 @@ void Poker::setCommunityCards()
 }
 
 void Poker::initializePlayers(){
-  
+    
     // create player objects and add them to the players vector
     std::cout<<"here"<<std::endl;
     Player* player = new Player();
+    player->setPlayer();
     player->setName("Joe");
-    this->setPlayer(player);
+    
     this->players.push_back(player);
  
     // std::unique_ptr<Strategy> myStrategy = std::make_unique<RandomStrategy>();
@@ -570,7 +571,7 @@ void Poker::showDownState(){
 }
 void Poker::bettingState(){
     bool bettingComplete;
-    int currentBetAmount;
+
     std::cout<<"in bet state"<<std::endl;
     // while(!bettingComplete)
     // {
@@ -579,7 +580,7 @@ void Poker::bettingState(){
         for (auto& player : this->playersInHand)
         {
             std::cout<<"in main  loop of bets"<<std::endl;
-            Decision decision = player->makeDecision(currentBetAmount);
+            Decision decision = player->makeDecision(this->currentBetAmount);
             std::cout<<"decision made champ"<<std::endl;
 
             if (decision == Decision::Fold) {
@@ -588,13 +589,15 @@ void Poker::bettingState(){
                 this->notifyPlayerFolded(player->playerIndex);
             }
             else if (decision == Decision::Call){
-                std::cout<<player->getName()<<" has called"<<std::endl;
+                
                 int chipsToAdd;
-                if(player->getChips(currentBetAmount)){
-                    this->notifyPlayerCall(player->playerIndex, currentBetAmount);
-                    chipsToAdd = currentBetAmount;
+                if(player->getChips(this->currentBetAmount)){
+                    std::cout<<player->getName()<<" has called for " << this->currentBetAmount<<std::endl;
+                    this->notifyPlayerCall(player->playerIndex, this->currentBetAmount);
+                    chipsToAdd = this->currentBetAmount;
                 }
                 else{
+                    std::cout<<player->getName()<<" else loop has called for " << this->currentBetAmount<<std::endl;
                     chipsToAdd = player->allIn();
                     
                     this->notifyPlayerAllIn(player->playerIndex);
@@ -604,16 +607,17 @@ void Poker::bettingState(){
             
             }
             else if (decision == Decision::Check){
+                
                 std::cout<<player->getName()<<" has checked"<<std::endl;
                 this->notifyPlayerCheck(player->playerIndex);
             }
             else if(decision == Decision::Raise){
-                std::cout<<player->getName()<<" has raised"<<std::endl;
                 int bet = player->getChipsToBet();
-                currentBetAmount = currentBetAmount+bet;
+                std::cout<<player->getName()<<" has raised"<<bet<<std::endl;
+
+                this->currentBetAmount = this->currentBetAmount+bet;
                 allPlayersChecked = false;
             }
-            
         }
         std::cout<<"End of Betting"<<std::endl;
     this->incrementState();
@@ -631,6 +635,7 @@ void Poker::bettingState(){
     }
     // if (allPlayersChecked) bettingComplete = true;
     // }
+    this->currentBetAmount = 0;
 }
 void Poker::testFunc()
 {
@@ -645,6 +650,7 @@ Poker::Poker()
 {
     this->initializeVariables();
     this->initializePlayers();
+
     std::cout<<this->playersInHand.size()<<std::endl;
     std::cout<<"Poker"<<std::endl;
 }

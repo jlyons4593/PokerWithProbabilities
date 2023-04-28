@@ -3,15 +3,25 @@
 #include "utils.hpp"
 #include "PokerOfflineUi.h"
 #include "PokerOfflineUiSingleton.h"
+
+
+void Player::setPlayer(){
+    
+
+}
 Decision Player::makeDecision(int currentBet) {
     std::cout<<"frick";
-    
+        
+
     PokerOfflineUiSingleton& singleton = PokerOfflineUiSingleton::getInstance();
     PokerOfflineUi* ui = singleton.getPokerOfflineUi();
+    ui->setPlayer(this);
     ui->resetReadyAndDecision();
     
 
     Decision decision= ui->waitForPlayerDecision(currentBet);
+
+    std::cout<<"Player bet amount = "<<this->chipsToBet<<std::endl;
     
    
 
@@ -34,7 +44,7 @@ Decision Player::makeDecision(int currentBet) {
 
 
 Player::Player(){
-
+    this->chipsToBet = 0;
 }
 Player::~Player(){
     

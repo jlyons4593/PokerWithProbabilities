@@ -26,7 +26,7 @@ Card m_card2;
 
 
 
-int chipsToBet;
+
 
 
 std::vector<Card> bestHand;
@@ -40,6 +40,8 @@ void setNumberOfChips(int numberOfChips);
 void setNumberOfChipsToBet(int chips);
 
 int playerIndex;
+
+int chipsToBet;
 
 int getNumberOfChips();
 

@@ -5,8 +5,10 @@ class HandStrengthStrategy : public Strategy {
 public:
     Decision makeDecision(int currentBet) override {
         // implementation for an aggressive strategy
-        return Decision::Raise;
-        
+        if (currentBet == 0 ){
+            return Decision::Check;    
+        }
+        return Decision::Call;
     }
 };
 
@@ -15,6 +17,9 @@ class RandomStrategy : public Strategy {
 public:
     Decision makeDecision(int currentBet) override {
         // implementation for a conservative strategy
+        if (currentBet == 0 ){
+            return Decision::Check;    
+        }
         return Decision::Call;
     }
 };
