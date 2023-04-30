@@ -168,6 +168,9 @@ void PokerOfflineUi::initialiseGeneralPlayButtons()
 	this->pokerHandsText.setOrigin(pokerHandsRectangle.left + round(pokerHandsRectangle.width / 2.0f), pokerHandsRectangle.top + round(pokerHandsRectangle.height / 2.0f));
 	this->pokerHandsText.setPosition(this->pokerHandsButton.getPosition());
 
+
+
+
 }
 
 void PokerOfflineUi::initialisePlayerButtons()
