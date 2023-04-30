@@ -3,15 +3,23 @@
 // AggressiveStrategy.h
 class HandStrengthStrategy : public Strategy {
 public:
-    int makeDecision() override {
+    Decision makeDecision(int currentBet) override {
         // implementation for an aggressive strategy
+        if (currentBet == 0 ){
+            return Decision::Check;    
+        }
+        return Decision::Call;
     }
 };
 
 // ConservativeStrategy.h
 class RandomStrategy : public Strategy {
 public:
-    int makeDecision() override {
+    Decision makeDecision(int currentBet) override {
         // implementation for a conservative strategy
+        if (currentBet == 0 ){
+            return Decision::Check;    
+        }
+        return Decision::Call;
     }
 };

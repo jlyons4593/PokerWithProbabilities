@@ -21,13 +21,39 @@ std::vector<Card> PlayerBase::getCards() const{
     return cards;
 }
 
+void PlayerBase::setNumberOfChipsToBet(int chips){
+    std::cout<<"player base "<<std::endl;
+    this->chipsToBet = chips;
+    std::cout<< "chips set"<<std::endl;
+}
 
 void PlayerBase::initialiseVariables()
 {
 
 }
 
+void PlayerBase::setName(std::string name){
+    this->name = name;
+}
 
+int PlayerBase::allIn(){
+    int x = this->numChips;
+    this->numChips = 0;
+    return x;
+}
+
+bool PlayerBase::getChips(int chipAmount){
+    std::cout<<"players chips = "<< this->numChips<<std::endl;
+    if (this->numChips>chipAmount){
+        this->numChips -= chipAmount;
+        return true;
+    }
+    return false;
+}
+
+std::string PlayerBase::getName(){
+    return this->name;
+}
 int PlayerBase::getChipsToBet(){
     return this->chipsToBet;
 }
@@ -35,14 +61,18 @@ int PlayerBase::getChipsToBet(){
 bool PlayerBase::payBlind(int amount){
     std::cout<< "number of red chips = "<< this->numChips << std::endl;
     if (amount > this->numChips){
+        
         return false;
     }
     else{
+        this->numChips = this->numChips - amount;
         return true;
     }
     
 }
-
+int PlayerBase::getNumberOfChips(){
+    return this->numChips;
+}
 void PlayerBase::setBestHand(std::vector<Card>& cards){
     this->bestHand = cards;
 }

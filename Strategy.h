@@ -1,10 +1,10 @@
 #ifndef STRATEGY_H
 #define STRATEGY_H
-
+#include "Player.h"
 
 class Strategy {
 public:
-    virtual int makeDecision() = 0;
+    virtual Decision makeDecision(int currentBet) = 0;
 };
 
 

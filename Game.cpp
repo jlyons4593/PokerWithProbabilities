@@ -2,8 +2,10 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <cmath>
-#include "deck.h"
+
 #include "PokerOfflineUi.h"
+#include "PokerOfflineUiSingleton.h"
+
 
 
 
@@ -14,6 +16,8 @@ void Game::initialiseVariables()
 	
 	this->lMBDown = false;
 
+
+
 	this->deckLoader();
 
 }
@@ -21,15 +25,9 @@ void Game::initialiseVariables()
 void Game::deckLoader() {
 	// Creating deck instance
 	
-	this->deck.initialiseDeck();
+	
 
-	/*Card c = this->deck.drawCard();
-	Card b = this->deck.drawCard();
-	std::cout << (int)c.value << " of " << (int)c.suit << std::endl;
-	std::cout << int(b.value) << " of " << (int)b.suit << std::endl;
-	this->deck.shuffleDeck();
-	Card d = this->deck.drawCard();
-	std::cout << (int)d.value << " of " << (int)d.suit << std::endl;*/
+
 }
 
 void Game::initialiseWindow()
@@ -236,16 +234,24 @@ void Game::processMenuChoices()
 	}
 	else if (this->playVsAi.getGlobalBounds().contains(this->mousePositionFloat))
 	{
-		PokerOfflineUi newGame;
+		PokerOfflineUiSingleton& singleton = PokerOfflineUiSingleton::getInstance();
+		PokerOfflineUi* newGame = singleton.getPokerOfflineUi();
 		this->window->close();
 		
-		while (newGame.isGameRunning())
+		while (!newGame->hasStarted){
+			newGame->initialUpdate();
+
+			newGame->render();
+		}
+		newGame->startBetting();
+
+		while (newGame->isGameRunning())
 		{
 			//Update
-			newGame.update();
+			newGame->update();
 
 			//Render
-			newGame.render();
+			newGame->render();
 		}
 
 		std::cout << "User chose play vs AI" << std::endl;
