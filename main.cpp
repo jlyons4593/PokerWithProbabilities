@@ -2,36 +2,56 @@
 //
 
 #include <iostream>
-#include "Game.h"
-#include "Deck.h"
-#include "Poker.h"
+//#include "Game.h"
+//#include "Deck.h"
+//#include "Poker.h"
+#include "PokerHand.h"
+
 
 
 
 
 // Initialise the game engine
 
-void runGame()
-{
-    Game game;
-    while (game.isGameRunning())
-    {
-        //Update
-        game.update();
+//void runGame()
+//{
+//    Game game;
+//    while (game.isGameRunning())
+//    {
+//        //Update
+//        game.update();
+//
+//        //Render
+//        game.render();
+//    }
+//    // Poker poker;
+//    
+//}
 
-        //Render
-        game.render();
-    }
-    // Poker poker;
+void runPokerHand() 
+{
+    //  init Poker Hand
+    PokerHand pokerHand;
     
+    //  Starting  Hand
+    pokerHand.beginGame();
+
+    
+    //  loading the poker UI from the interface
+    pokerHand.loadUI();
+    
+   
+
+    
+
 }
 
 
 
 int main()
 {
-    runGame();
-    
+    //runGame();
+    runPokerHand();
     return 0;
 }
 

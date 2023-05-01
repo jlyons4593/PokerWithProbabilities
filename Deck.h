@@ -42,25 +42,6 @@ struct Card
 
 };
 
-// bool cardComparator(const Card& c1, const Card& c2) {
-//     if (c1.suit < c2.suit) {
-//         return true;
-//     } else if (c1.suit == c2.suit) {
-//         return c1.value < c2.value;
-//     } else {
-//         return false;
-//     }
-// }
-// bool compareByCardValue(Card& c1, Card& c2){
-// 	return c1.value < c2.value;
-// }
-
-
-struct Chip{
-	int chipValue;
-	std::string chipColor;
-	sf::Texture chipImage;
-};
 
 
 
@@ -68,33 +49,28 @@ class Deck
 {
 private:
 	std::vector<sf::Texture> cardFaces;
-	
 	void loadCardTextures();
-	void createChips();
 
 public:
 
-	//Constructor
+	// Constructor
 	Deck();
-	//Destructor
+	// Destructor
 	~Deck();
 
-	//blank Card
+	// blank Card
 	sf::Texture backOfCardTexture;
-	//Deck of cards
+	// Deck of cards
 	std::vector<Card> currentDeck;
 
-	std::vector<Chip> chipSet;
 
-	//draw top card
+	// draw top card
 	Card drawCard();
 
-	//shuffle Deck
-
+	// shuffle Deck
 	void shuffleDeck();
 
-	//load
-	
+	// load
 	void initialiseDeck();
 	
 };

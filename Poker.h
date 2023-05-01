@@ -5,6 +5,7 @@
 #include "ObserverPattern.cpp"
 #include <vector>
 #include <algorithm>
+#include "Utils.h"
 
 class Poker: public Subject{
 private:
@@ -12,17 +13,7 @@ private:
 //initialisation variables
 int m_numOfPlayers;
 
-enum HandRank {
-    HIGH_CARD = 0,
-    ONE_PAIR,
-    TWO_PAIR,
-    THREE_OF_A_KIND,
-    STRAIGHT,
-    FLUSH,
-    FULL_HOUSE,
-    FOUR_OF_A_KIND,
-    STRAIGHT_FLUSH
-};
+
 
 
 //cards variables
