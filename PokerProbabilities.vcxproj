@@ -154,12 +154,16 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerBase.cpp" />
     <ClCompile Include="Poker.cpp" />
+    <ClCompile Include="PokerHand.cpp" />
+    <ClCompile Include="PokerHandUI.cpp" />
     <ClCompile Include="PokerOfflineUi.cpp" />
     <ClCompile Include="PokerOfflineUiSingleton.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AI.h" />
     <ClInclude Include="Deck.h" />
+    <ClInclude Include="Delay.hpp" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerBase.h" />
@@ -172,6 +176,7 @@
     <ClInclude Include="Strategy.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="utils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
