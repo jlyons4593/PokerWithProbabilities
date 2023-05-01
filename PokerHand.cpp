@@ -1,4 +1,4 @@
-#include "pokerHand.h"
+#include "PokerHand.h"
 
 void PokerHand::initVariables()
 {
