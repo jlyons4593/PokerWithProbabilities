@@ -1,10 +1,12 @@
 #include "Poker.h"
 #include "PlayerBase.h"
 #include "AI.h"
-#include "Player.h"
+
 #include "Strategy.h"
 #include "SimpleStrategies.h"
 #include <algorithm>
+#include <thread>
+#include <chrono>
 #include <iostream>
 
 
@@ -12,11 +14,14 @@ void Poker::initializeVariables()
 {
     
 
-    this->moneyPerPlayer = 1500;
+    this->chipsPerPlayer = 1500;
     this->blindCounter=0;
     this->playersAreReady = false;
     this->m_numOfPlayers = 4;
+    this->currentBetAmount = 0;
     this->m_currentDeck.shuffleDeck();
+
+    this->currentState = GameState::GameStart;
    
 
 }
@@ -35,51 +40,66 @@ void Poker::setCommunityCards()
 }
 
 void Poker::initializePlayers(){
-    // create player objects and add them to the players vector
-    Player player;
-    player.name = "User";
-    this->players.push_back(&player);
-
     
-    std::unique_ptr<Strategy> myStrategy = std::make_unique<RandomStrategy>();
-    AI myAI(std::move(myStrategy));
+    // create player objects and add them to the players vector
+    std::cout<<"here"<<std::endl;
+    Player* player = new Player();
+    player->setPlayer();
+    player->setName("Joe");
+    
+    this->players.push_back(player);
+ 
+    // std::unique_ptr<Strategy> myStrategy = std::make_unique<RandomStrategy>();
+    // AI myAI(std::move(myStrategy));
+    // this->players.push_back(&myAI);
+    
+    for (int i = 0; i < this->m_numOfPlayers; i++)
+    {
+        std::cout<<i<<std::endl;
 
-    // for (int i = 0; i < this->m_numOfPlayers; i++)
-    // {
-    //     std::unique_ptr<Strategy> myStrategy = std::make_unique<RandomStrategy>();
+        if( i %2 ==0){
+            this->players.push_back(new AI(new RandomStrategy));
+            
+        }
+        else{
+            this->players.push_back(new AI(new HandStrengthStrategy));
+        }
+        this->players[i + 1]->setName("AI" + std::to_string(i+1));
 
-    //     PlayerBase* AIPtr = new AI(std::move(myStrategy));
-    //     AIPtr->name = "Player"+std::to_string(i);
-    //     this->players.push_back(AIPtr);
 
-    // }
+    }
+    std::cout<<this->playersInHand.size()<<std::endl;
     this->playersInHand = this->players;
+    std::cout<<this->players.size()<<std::endl;
 }
 
 void Poker::setPlayerCards()
 {
     std::vector<Card> cards;
-    for(int i=0; i<this->m_numOfPlayers; i++)
+    for(int i=0; i<this->playersInHand.size(); i++)
     {
 
         Card test1 = this->m_currentDeck.drawCard();
-        std::cout<<std::to_string((int)test1.value)<<std::endl;
+        
+        // std::cout<<std::to_string((int)test1.value)<<std::endl;
         cards.push_back(test1);
 
         Card test2 = this->m_currentDeck.drawCard();
-        std::cout<<std::to_string((int)test2.value)<<std::endl;
+        // std::cout<<std::to_string((int)test2.value)<<std::endl;
         cards.push_back(test2);
         std::cout<<(int)cards[0].value << " " <<(int)cards[1].value << " player "<< i << std::endl;
         this->players[i]->setCards(cards);
+        if ( this->players[i]->getName()=="Joe"){
+            std::cout<<"Joe"<<std::endl;
+            this->notifyUpdatePlayersCards(cards);
+            
+            std::cout<<"Joe"<<std::endl;
+        }
         cards.clear();
     }
 
 
-    for (auto player: this->players){
-        std::cout<<player<<std::endl;
-        std::vector<Card> tester = player->getCards();
-        std::cout<< (int)tester[0].value<< " "<< (int)tester[1].value<< std::endl;
-    }
+    
 } 
 
 
@@ -90,45 +110,43 @@ void Poker::setPlayerBlinds()
     
     bool bigBlindPaid = false;
     bool smallBlindPaid = false;
-    int player = this->blindCounter%this->playersInHand.size();
-    std::cout<<"here"<<std::endl;
-    for(auto& player: this->players){
-        std::cout<<player->name;
+    
+    //setting correct player indexes
+    int bigBlindPlayerIndex = this->blindCounter%this->playersInHand.size();
+    int smallBlindPlayerIndex = bigBlindPlayerIndex+1;
+
+    //adjusting small player index to be 0 if its bigger than the number of players in the hand
+    if (smallBlindPlayerIndex == this->playersInHand.size()) smallBlindPlayerIndex=0;
+
+    bigBlindPaid = this->players[bigBlindPlayerIndex]->payBlind(25);
+    if (bigBlindPaid)std::cout<<this->players[bigBlindPlayerIndex]<<" has paid blind";
+
+    smallBlindPaid = this->players[smallBlindPlayerIndex]->payBlind(10);
+    if (smallBlindPaid)std::cout<<this->players[smallBlindPlayerIndex]<<" has paid blind";
+
+    
+    if (bigBlindPaid&&smallBlindPaid) 
+    {
+        this->blindCounter++;
+        return;
     }
-    
-    bigBlindPaid = this->players[this->blindCounter]->payBlind(25);
-    std::cout<<"here"<<std::endl;
 
-    smallBlindPaid = this->players[this->blindCounter+1]->payBlind(10);
-    
-    if (bigBlindPaid&&smallBlindPaid) return;
-
-    std::cout<< "Player "<< player<< " has payed the big blinds"<< std::endl;
-    std::cout<< "Player "<< player+1<< " has payed the small blinds"<< std::endl;
-
-    if(!bigBlindPaid)this->removePlayerFromHand(this->players[this->blindCounter]);
-    if(!smallBlindPaid)this->removePlayerFromHand(this->players[this->blindCounter]);
-
-    this->blindCounter++;
-
+    if(!bigBlindPaid || !smallBlindPaid)
+    {
+        this->removePlayerFromHand(this->players[smallBlindPlayerIndex]);
+        this->setPlayerBlinds();
+    }
 }
 
-    void Poker::removePlayerFromHand(PlayerBase *player)
+void Poker::removePlayerFromHand(PlayerBase* player)
 {
-    std::cout<<"Player "<<player->name<< " is bankrupt"<< std::endl;
-    this->playersInHand.erase(std::remove(this->playersInHand.begin(), this->playersInHand.end(), player), this->playersInHand.end());;
+    std::cout<<"Player "<<player->getName()<< " is bankrupt"<< std::endl;
+    this->playersInHand.erase(std::remove(this->playersInHand.begin(), this->playersInHand.end(), player), this->playersInHand.end());
 }
 
 void Poker::hand(){
-    std::cout<< "starting a Hand"<< std::endl;
-    this->setPlayerBlinds();
-    std::cout<< "setting blinds"<< std::endl;
-    this->setPlayerCards();
-    std::cout<< "setting player Cards"<< std::endl;
-    this->setCommunityCards();
-    std::cout<< "setting community cards"<< std::endl;
-    for (int i=0; i<4; i++)
-    {
+    
+    
         this->playersAreReady = false;
         while (!this->playersAreReady)
         {
@@ -137,30 +155,30 @@ void Poker::hand(){
                 std::vector<Card> cards=this->players[j]->getCards();
                 // std::cout << std::to_string((int)cards[0].value)<<" "<< std::to_string((int)cards[1].value)<< std::endl;
                 
-                int decision = this->players[j]->makeDecision();
-                if (decision == 1)
-                {
-                    int chipsBet = players[j]->getChipsToBet();
-                    this->pot = this->pot + chipsBet;
+                // int decision = this->players[j]->makeDecision();
+                // if (decision == 1)
+                // {
+                //     int chipsBet = players[j]->getChipsToBet();
+                //     this->pot = this->pot + chipsBet;
 
-                }
-                else if (decision == 2){
-                    this->removePlayerFromHand(this->playersInHand[j]);
-                    std::cout <<"player "<< this->playersInHand[j]->name << " has folded" <<std::endl;
-                }
+                // }
+                // else if (decision == 2){
+                //     this->removePlayerFromHand(this->playersInHand[j]);
+                //     std::cout <<"player "<< this->playersInHand[j]->getName() << " has folded" <<std::endl;
+                // }
             }
             this->playersAreReady = true;
         }
     std::cout << "The pot = " << this->pot<< std::endl;
         
-    }
+    
 
     std::cout<< "entering determined hand winners"<< std::endl;
 
     std::vector<PlayerBase*> winners = this->determineHandWinner();
 
     for (auto& winner : winners){
-        std::cout<< "winner = " << winner->name << std::endl;
+        std::cout<< "winner = " << winner->getName() << std::endl;
     }
     
 
@@ -363,7 +381,7 @@ std::vector<PlayerBase*> Poker::determineHandWinner(){
     int rank =-1;
     for(auto player: this->players)
     {
-        std::cout<< player->name << std::endl; 
+        std::cout<< player->getName() << std::endl; 
         if (this->isStraightFlush(player)){
             if (rank==8){
                 topPlayerHands.push_back(player);
@@ -476,25 +494,167 @@ std::vector<PlayerBase*> Poker::determineHandWinner(){
 void Poker::fullGame()
 {
     
-    for(auto& player: this->players){
-        player->setNumberOfChips(this->moneyPerPlayer);
-    }
-   
-    while (this->players.size()>1)
-    {
-        this->hand();
+  
+    std::cout<<"numberOfchips set"<< std::endl;
+    this->hand();
+    // while (this->players.size()>1)
+    // {
+    //     this->hand();
     
-    }
-    std::cout<<"Match winner = "<<players[0]->name<<std::endl;
+    // }
+    std::cout<<"Match winner = "<<std::endl;
 
 
 }
+
+// Outline of order in which events will happened although called by the UI 
+// betting occurs in each of these steps
+// start hand 
+// Flop 
+// turn
+// river
+
+void Poker::startHandState()
+{
+    std::cout<< "starting a Hand"<< std::endl;
+ 
+    this->setPlayerBlinds();
+    
+    std::cout<< "setting blinds"<< std::endl;
+    this->setPlayerCards();
+    std::cout<< "setting player Cards"<< std::endl;
+    this->setCommunityCards();
+    
+    std::cout<< "setting community cards"<< std::endl;
+    
+}
+void Poker::incrementState(){
+    this->currentState = static_cast<GameState>(this->currentState + 1); 
+}
+void Poker::startGame()
+{
+    
+    std::cout<<"Testing"<< std::endl;
+    std::cout<<"shid"<<std::endl;
+    std::cout<< "num of players = "<< this->players.size()<<std::endl;
+    
+    for(auto& player: this->players){
+        player->setNumberOfChips(this->chipsPerPlayer);
+        std::cout<<player->getNumberOfChips()<<std::endl;
+    }
+    this->incrementState();
+    this->startHandState();
+    
+
+}
+
+
+void Poker::flopState()
+{
+    this->notifyUpdateCommunityCardsOnFlop(this->communityCard1, this->communityCard2, this->communityCard3);
+    this->bettingState();
+    
+    
+}
+void Poker::turnState()
+{
+    this->notifyUpdateCommunityCardsOnTurn(this->communityCard4);
+    this->bettingState();
+}
+void Poker::riverState()
+{
+    this->notifyUpdateCommunityCardsOnRiver(this->communityCard5);
+    this->bettingState();
+}
+void Poker::showDownState(){
+
+}
+void Poker::bettingState(){
+    bool bettingComplete;
+
+    std::cout<<"in bet state"<<std::endl;
+    // while(!bettingComplete)
+    // {
+        bool allPlayersChecked;
+        std::cout<<"in bet loop"<<std::endl;
+        for (auto& player : this->playersInHand)
+        {
+            std::cout<<"in main  loop of bets"<<std::endl;
+            Decision decision = player->makeDecision(this->currentBetAmount);
+            std::cout<<"decision made champ"<<std::endl;
+
+            if (decision == Decision::Fold) {
+                std::cout<<player->getName()<<" has folded"<<std::endl;
+                this->removePlayerFromHand(player);
+                this->notifyPlayerFolded(player->playerIndex);
+            }
+            else if (decision == Decision::Call){
+                
+                int chipsToAdd;
+                if(player->getChips(this->currentBetAmount)){
+                    std::cout<<player->getName()<<" has called for " << this->currentBetAmount<<std::endl;
+                    this->notifyPlayerCall(player->playerIndex, this->currentBetAmount);
+                    chipsToAdd = this->currentBetAmount;
+                }
+                else{
+                    std::cout<<player->getName()<<" else loop has called for " << this->currentBetAmount<<std::endl;
+                    chipsToAdd = player->allIn();
+                    
+                    this->notifyPlayerAllIn(player->playerIndex);
+                }
+                this->pot += chipsToAdd;
+
+            
+            }
+            else if (decision == Decision::Check){
+                
+                std::cout<<player->getName()<<" has checked"<<std::endl;
+                this->notifyPlayerCheck(player->playerIndex);
+            }
+            else if(decision == Decision::Raise){
+                int bet = player->getChipsToBet();
+                std::cout<<player->getName()<<" has raised"<<bet<<std::endl;
+
+                this->currentBetAmount = this->currentBetAmount+bet;
+                allPlayersChecked = false;
+            }
+        }
+        std::cout<<"End of Betting"<<std::endl;
+    this->incrementState();
+    if(this->currentState ==GameState::Flop){
+        this->flopState();
+    }
+    else if(this->currentState ==GameState::Turn){
+        this->turnState();
+    }
+    else if(this->currentState ==GameState::River){
+        this->riverState();
+    }
+    else if(this->currentState ==GameState::ShowDown){
+        this->showDownState();
+    }
+    // if (allPlayersChecked) bettingComplete = true;
+    // }
+    this->currentBetAmount = 0;
+}
+void Poker::testFunc()
+{
+    for (auto player: this->players){
+        std::cout<<player<<std::endl;
+        std::vector<Card> tester = player->getCards();
+        std::cout<< (int)tester[0].value<< " "<< (int)tester[1].value<< std::endl;
+    }
+}
+
 Poker::Poker()
 {
     this->initializeVariables();
     this->initializePlayers();
-    this->fullGame();
+
+    std::cout<<this->playersInHand.size()<<std::endl;
+    std::cout<<"Poker"<<std::endl;
 }
+
 Poker::~Poker(){
 
 }

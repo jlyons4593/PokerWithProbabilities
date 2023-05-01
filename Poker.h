@@ -5,7 +5,10 @@
 #include "ObserverPattern.cpp"
 #include <vector>
 #include <algorithm>
-#include "Utils.h"
+#include <array>
+#include "utils.hpp"
+#include "Player.h"
+
 
 class Poker: public Subject{
 private:
@@ -27,15 +30,26 @@ Card communityCard3;
 Card communityCard4;
 Card communityCard5;
 
+//player variables 
+PlayerBase* player;
+PlayerBase* AI1;
+PlayerBase* AI2;
+PlayerBase* AI3;
+PlayerBase* AI4;
+
 //players vector
 std::vector<PlayerBase*> players;
 std::vector<PlayerBase*> playersInHand;
 
 //chip variables
-int numOfRedChips;
-int numOfYellowChips;
-int numOfGreenChips;
-int numOfBlueChips;
+// int numOfRedChips;
+// int numOfYellowChips;
+// int numOfGreenChips;
+// int numOfBlueChips;
+
+
+
+
 
 
 //blind logic
@@ -47,7 +61,9 @@ int smallBlind;
 // pot
 int pot;
 
-int moneyPerPlayer;
+//bettingstate logic
+
+int currentBetAmount;
 
 bool playersAreReady;
 
@@ -75,12 +91,38 @@ bool isPair(PlayerBase *player);
 //bankrupt Player logic
 
 void removePlayerFromHand(PlayerBase* player);
+void incrementState();
 
+void changeState();
 
 void fullGame();
+void startHandState();
 
 public:
+enum GameState{
+    GameStart,
+    Preflop,
+    Flop,
+    Turn,
+    River,
+    ShowDown,
+    GameOver
+};
+
+int chipsPerPlayer;
+
+GameState currentState;
 //Constructors and Destructors
+
+void startGame();
+void preFlop();
+void flopState();
+void turnState();
+void riverState();
+void bettingState();
+void showDownState();
+
+void testFunc();
 
 Poker();
 ~Poker();

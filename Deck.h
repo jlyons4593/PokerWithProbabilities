@@ -39,6 +39,7 @@ struct Card
 	CardValue value;
 	Suit suit;
 	sf::Texture cardFace;
+	int index;
 
 };
 

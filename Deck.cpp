@@ -1,4 +1,5 @@
 #include "Deck.h"
+
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -268,6 +269,7 @@ void Deck::loadCardTextures()
 void Deck::initialiseDeck()
 {
 	this->loadCardTextures();
+	std::cout<< " number of card textures = "<< this->cardFaces.size()<<std::endl;
 	int counter = 0;
 	for (int i = (int)Suit::Clubs; i <= (int)Suit::Hearts;i++) 
 	{
@@ -277,9 +279,9 @@ void Deck::initialiseDeck()
 			c.suit = (Suit)i;
 			c.value = (CardValue)j;
 			
-			c.cardFace = Deck::cardFaces[counter];
-			Deck::currentDeck.push_back(c);
-
+			c.cardFace = this->cardFaces[counter];
+			this->currentDeck.push_back(c);
+			c.index = counter;
 			counter++;
 			
 		}
@@ -288,10 +290,10 @@ void Deck::initialiseDeck()
 
 Card Deck::drawCard()
 {
-	if (!Deck::currentDeck.empty())
+	if (!this->currentDeck.empty())
 	{
-		Card c = Deck::currentDeck.back();
-		Deck::currentDeck.pop_back();
+		Card c = this->currentDeck.back();
+		this->currentDeck.pop_back();
 		return c;
 	}
 	else
@@ -305,7 +307,7 @@ void Deck::shuffleDeck()
 {
 	std::random_device rd;
 	std::mt19937 g(rd());
-	shuffle(Deck::currentDeck.begin(), Deck::currentDeck.end(), g);
+	shuffle(this->currentDeck.begin(), this->currentDeck.end(), g);
 }
 
 Deck::Deck()
