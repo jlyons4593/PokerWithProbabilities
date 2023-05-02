@@ -33,10 +33,6 @@ void runPokerHand()
     //  init Poker Hand
     PokerHand pokerHand;
     
-    //  Starting  Hand
-    pokerHand.beginGame();
-
-    
     //  loading the poker UI from the interface
     pokerHand.loadUI();
     
