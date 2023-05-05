@@ -2,10 +2,12 @@
 //
 
 #include <iostream>
-//#include "Game.h"
-//#include "Deck.h"
-//#include "Poker.h"
-#include "PokerHand.h"
+#include "Game.h"
+#include "Deck.h"
+#include "Poker.h"
+#include "HandWonUI.h"
+#include "PokerHandsUI.h"
+//#include "PokerHand.h"
 
 
 
@@ -13,41 +15,50 @@
 
 // Initialise the game engine
 
-//void runGame()
-//{
-//    Game game;
-//    while (game.isGameRunning())
-//    {
-//        //Update
-//        game.update();
-//
-//        //Render
-//        game.render();
-//    }
-//    // Poker poker;
-//    
-//}
-
-void runPokerHand() 
+void runGame()
 {
-    //  init Poker Hand
-    PokerHand pokerHand;
-    
-    //  loading the poker UI from the interface
-    pokerHand.loadUI();
-    
-   
+    Game game;
+    while (game.isGameRunning())
+    {
+        //Update
+        game.update();
 
+        //Render
+        game.render();
+    }
+    // Poker poker;
     
-
 }
+
+//void runPokerHand() 
+//{
+//    
+//    //  init Poker Hand
+//    PokerHand pokerHand;
+//    
+//    //  loading the poker UI from the interface
+//    pokerHand.loadUI();
+//    
+//   
+//
+//    
+//
+//}
 
 
 
 int main()
 {
-    //runGame();
-    runPokerHand();
+    /*HandWonUI* display = new HandWonUI();
+    while (display->isGameRunning) {
+        display->update();
+        display->render();
+
+    }*/
+    
+    //std::cout << "game over sequence" << std::endl;
+    runGame();
+    //runPokerHand();
     return 0;
 }
 

@@ -5,9 +5,10 @@
 #include "Poker.h"
 #include "utils.hpp"
 #include "Player.h"
+#include "UI.h"
 
 #include <thread>
-class PokerOfflineUi: public Observer
+class PokerOfflineUi: public Observer, public UI
 {
 private:
 
@@ -99,7 +100,6 @@ private:
 	sf::Text AI3Chips;
 	sf::Text AI4Chips;
 
-	std::vector<sf::Text> playerCash;
 
 	// Player Names
 	sf::Text playerName;
@@ -124,8 +124,6 @@ private:
 	int AI2ChipsInt;
 	int AI3ChipsInt;
 	int AI4ChipsInt;
-
-	std::vector<int> playerCashInt;
 
 	int playerBetAmount;
 
@@ -200,11 +198,19 @@ private:
 	void processReadyUp();
 	void showPokerHands();
 	void processStateSwitch();
+	void processPokerHandsButton();
+	void runPokerHandsWindow();
+	void updatePlayerStatus(int playerIndex, std::string string);
+	void updatePlayerChips(int playerIndex, int currentBet);
 
 	//reference to player object
 	Player* player;
 
 	bool readyUp;
+
+	bool isPokerHandsOpen;
+
+	std::thread pokerHandsThread;
 
 	Poker* pokerGame;
 

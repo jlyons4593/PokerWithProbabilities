@@ -5,11 +5,10 @@
 
 IPokerHandUI::IPokerHandUI() {
     pokerHandUIInstance = new PokerHandUI();
-    pokerHandInstance = new PokerHand();
 }
 
 IPokerHandUI::~IPokerHandUI() {
-    delete pokerHandInstance;
+  
     delete pokerHandUIInstance;
 }
 
@@ -21,7 +20,5 @@ IPokerHandUI& IPokerHandUI::getInstance() {
 PokerHandUI* IPokerHandUI::getPokerHandUI() const {
     return pokerHandUIInstance;
 }
-PokerHand* IPokerHandUI::getPokerHand() const {
-    return pokerHandInstance;
-}
+
 #endif // IPOKERHANDUI_CPP

@@ -1,7 +1,8 @@
 #include "Poker.h"
 #include "PlayerBase.h"
 #include "AI.h"
-
+#include "HandWonUI.h"
+#include "HandLostUI.h"
 #include "Strategy.h"
 #include "SimpleStrategies.h"
 #include <algorithm>
@@ -14,7 +15,7 @@ void Poker::initializeVariables()
 {
     
 
-    this->chipsPerPlayer = 1500;
+    this->chipsPerPlayer = 100;
     this->blindCounter=0;
     this->playersAreReady = false;
     this->m_numOfPlayers = 4;
@@ -46,6 +47,7 @@ void Poker::initializePlayers(){
     Player* player = new Player();
     player->setPlayer();
     player->setName("Joe");
+    player->playerIndex=0;
     
     this->players.push_back(player);
  
@@ -65,6 +67,7 @@ void Poker::initializePlayers(){
             this->players.push_back(new AI(new HandStrengthStrategy));
         }
         this->players[i + 1]->setName("AI" + std::to_string(i+1));
+        this->players[i + 1]->playerIndex = i + 1;
 
 
     }
@@ -527,6 +530,8 @@ void Poker::startHandState()
     
     std::cout<< "setting community cards"<< std::endl;
     
+   
+    
 }
 void Poker::incrementState(){
     this->currentState = static_cast<GameState>(this->currentState + 1); 
@@ -569,12 +574,22 @@ void Poker::riverState()
 void Poker::showDownState(){
 
 }
+void Poker::gameOverState() {
+    HandLostUI* display = new HandLostUI();
+    notifyGameOver();
+    while (display->isGameRunning) {
+        display->update();
+        display->render();
+        
+    }
+    std::cout << "game over sequence" << std::endl;
+}
 void Poker::bettingState(){
     bool bettingComplete;
 
     std::cout<<"in bet state"<<std::endl;
-    // while(!bettingComplete)
-    // {
+    //while(!bettingComplete)
+    //{
         bool allPlayersChecked;
         std::cout<<"in bet loop"<<std::endl;
         for (auto& player : this->playersInHand)
@@ -587,11 +602,15 @@ void Poker::bettingState(){
                 std::cout<<player->getName()<<" has folded"<<std::endl;
                 this->removePlayerFromHand(player);
                 this->notifyPlayerFolded(player->playerIndex);
+                //if (player->getName() == "Joe") {
+                    this->gameOverState();
+                //}
+                
             }
             else if (decision == Decision::Call){
                 
                 int chipsToAdd;
-                if(player->getChips(this->currentBetAmount)){
+                if(player->takeChips(this->currentBetAmount)){
                     std::cout<<player->getName()<<" has called for " << this->currentBetAmount<<std::endl;
                     this->notifyPlayerCall(player->playerIndex, this->currentBetAmount);
                     chipsToAdd = this->currentBetAmount;

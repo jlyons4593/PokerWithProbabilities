@@ -149,6 +149,9 @@
     <ClCompile Include="AI.cpp" />
     <ClCompile Include="Deck.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="HandLostUI.cpp" />
+    <ClCompile Include="HandWonUI.cpp" />
+    <ClCompile Include="IPokerHand.cpp" />
     <ClCompile Include="IPokerHandUI.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObserverPattern.cpp" />
@@ -156,6 +159,7 @@
     <ClCompile Include="PlayerBase.cpp" />
     <ClCompile Include="Poker.cpp" />
     <ClCompile Include="PokerHand.cpp" />
+    <ClCompile Include="PokerHandsUI.cpp" />
     <ClCompile Include="PokerHandUI.cpp" />
     <ClCompile Include="PokerOfflineUi.cpp" />
     <ClCompile Include="PokerOfflineUiSingleton.cpp" />
@@ -166,11 +170,15 @@
     <ClInclude Include="Deck.h" />
     <ClInclude Include="Delay.hpp" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="HandLostUI.h" />
+    <ClInclude Include="HandWonUI.h" />
+    <ClInclude Include="IPokerHand.h" />
     <ClInclude Include="IPokerHandUI.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerBase.h" />
     <ClInclude Include="Poker.h" />
     <ClInclude Include="PokerHand.h" />
+    <ClInclude Include="PokerHandsUI.h" />
     <ClInclude Include="PokerHandUI.h" />
     <ClInclude Include="PokerOfflineUi.h" />
     <ClInclude Include="PokerOfflineUiSingleton.h" />

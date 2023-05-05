@@ -1,12 +1,20 @@
+#ifndef POKERHANDUI_H
+#define POKERHANDUI_H
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "UI.h"
 #include "Deck.h"
-class IPokerHandUI;
+#include "ObserverPattern.cpp"
 
-class PokerHandUI : public UI
+class IPokerHandUI;
+class PokerHand;
+
+class PokerHandUI : public UI , public Observer
 {
 private:
+
+	// variables
+	
 	
 	Deck deck;
 
@@ -19,6 +27,7 @@ private:
 	sf::RectangleShape menuBar;
 	
 	//  Menu Bar Text variables
+	std::vector<std::unique_ptr<sf::Drawable>> titlebar;
 	sf::Text title;
 	sf::Text instructions;
 	sf::Text settings;
@@ -89,11 +98,39 @@ private:
 	void initGeneralPlayButtons();
 	void initReadyUpButton();
 	void initBettingObjects();
+	void initGameStateButton();
+
+
+	//Event Handling 
+	void processStartingClick();
 
 
 public:
+	PokerHand* pokerHand;
 
+	// UI loop variables
+	bool handStarted;
 	bool isGameRunning;
+
+	// Observer pattern functions
+	void updatePlayerCards(std::vector<Card> cards) override;
+	void updateCommunityCardsOnFlop(Card& c1, Card& c2, Card& c3) override;
+	void updateCommunityCardsOnTurn(Card& card) override;
+	void updateCommunityCardsOnRiver(Card& card) override;
+
+	void startGame() override;
+	void endGame() override;
+	
+	void setPlayer(Player* player) override;
+	void updateOnBet() override;
+	void foldPlayer(int playerIndex) override;
+	void raisePlayer(int playerIndex, int raiseAmount)override;
+	void checkPlayer(int playerIndex) override;
+	void callPlayer(int playerIndex, int chipAmount) override;
+	void allInPlayer(int playerIndex) override;
+	
+	
+	void initialUpdate();
 
 	void update() override;
 	void render() override;
@@ -101,4 +138,4 @@ public:
 	PokerHandUI();
 	~PokerHandUI();
 };
-
+#endif // POKERHANDUI_H

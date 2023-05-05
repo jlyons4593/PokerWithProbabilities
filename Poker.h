@@ -95,6 +95,7 @@ void incrementState();
 
 void changeState();
 
+void gameOverState();
 void fullGame();
 void startHandState();
 

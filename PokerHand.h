@@ -8,13 +8,35 @@
 #include "SimpleStrategies.h"
 
 
+
 class IPokerHandUI;
 class Deck;
-
+class Card;
 
 class PokerHand: public Subject
 {
 private:
+	// Community Cards
+	std::vector<Card> communityCards;
+
+	//Update UI
+	void updateUI();
+
+	// Change State
+	void setState(GameState newState) {
+		currentState = newState;
+		updateUI();
+	}
+
+	void setCardsAndBlinds();
+
+	void payBlinds();
+	void setPlayerCards();
+	void setCommunityCards();
+
+	// Game State
+	GameState currentState;
+
 	// UI pointer
 	PokerHandUI* ui;
 
@@ -33,19 +55,22 @@ private:
 	void initVariables();
 	void initPlayers();
 
-	//game functions
-	void startHand();
+	
 
 	// Create Deck
 	Deck deck;
+
+
 
 
 public:
 
 	//  Function to initialise and load the PokerHand UI
 	void loadUI();
+	
 
-
+	//game functions
+	void startHand();
 	
 	
 

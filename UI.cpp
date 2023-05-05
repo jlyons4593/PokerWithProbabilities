@@ -11,10 +11,9 @@ void UI::setRectangleProperties(sf::RectangleShape& rectangle, const sf::Vector2
 	rectangle.setPosition(position);
 }
 
-void UI::setCardProperties(sf::Sprite& card, const sf::Texture& texture, float scale, const sf::Vector2f& position, float rotation/* = 0 */)
+void UI::setCardProperties(sf::Sprite& card, sf::Texture& texture, float scale, const sf::Vector2f& position, float rotation/* = 0 */)
 {
 	card.setTexture(texture);
-
 	card.setScale(scale, scale);
 	sf::FloatRect cardRectangle = card.getLocalBounds();
 	card.setRotation(rotation);

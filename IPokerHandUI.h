@@ -19,7 +19,6 @@ public:
     // Public method to get a pointer to the PokerOfflineUi object
     PokerHandUI* getPokerHandUI() const;
 
-    PokerHand* getPokerHand() const;
 
 private:
     // Private constructor to prevent instantiation
@@ -31,7 +30,5 @@ private:
     // Private member variable to hold the pointer to the pokerHandUI object
     PokerHandUI* pokerHandUIInstance;
 
-    // Private member variable to hold the pointer to the pokerHandUI object
-    PokerHand* pokerHandInstance;
 };
 #endif // IPOKERHANDUI_H

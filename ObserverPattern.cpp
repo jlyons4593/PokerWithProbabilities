@@ -52,9 +52,9 @@ public:
         }
     }
     void notifyUpdatePlayersCards(std::vector<Card> cards){
-        std::cout<<"here"<<std::endl;
-        for( auto& observer: observers){
-            std::cout<<"observer loop"<<std::endl;
+        std::cout<<"In notify player Cards function"<<std::endl;
+        for(auto& observer: observers){
+            std::cout<<observer<<std::endl;
             observer->updatePlayerCards(cards);
             
             std::cout<<"player cards updated"<< std::endl;

@@ -54,7 +54,9 @@ virtual Decision makeDecision(int currentBet) = 0;
 
 virtual bool payBlind(int amount);
 
-bool getChips(int chipAmount);
+bool takeChips(int chipAmount);
+
+int returnNumberOfChips();
 
 void setCards(std::vector<Card>& cards);
 
