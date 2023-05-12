@@ -6,6 +6,7 @@
 #include "utils.hpp"
 #include "Player.h"
 #include "UI.h"
+#include "AudioManager.h"
 
 #include <thread>
 class PokerOfflineUi: public Observer, public UI
@@ -213,6 +214,8 @@ private:
 	std::thread pokerHandsThread;
 
 	Poker* pokerGame;
+
+	AudioManager* audioManager;
 
 	Decision decision;
 

@@ -22,6 +22,8 @@ void PokerOfflineUi::initialiseVariables()
 	this->hasFolded = false;
 	this->isLookingAtHands = true;
 	this->isPokerHandsOpen = false;
+	this->audioManager = new AudioManager();
+
 }
 void PokerOfflineUi::launchPoker()
 {
@@ -438,6 +440,7 @@ void PokerOfflineUi::startGame()
 	this->pokerGame->startGame();
 	
 }
+
 void PokerOfflineUi::setPlayer(Player* player){
 
 	this->player = player;
@@ -467,22 +470,40 @@ void PokerOfflineUi::updateOnBet()
 void PokerOfflineUi::updateCommunityCardsOnFlop(Card& c1,Card& c2,Card& c3)
 {
 	this->communityCard1.setTexture(this->deck.currentDeck[c1.index].cardFace);
+	this->render();
+	this->audioManager->playSound("dealCard1");
+	delay(500);
 	this->communityCard2.setTexture(this->deck.currentDeck[c2.index].cardFace);
+	this->render();
+	this->audioManager->playSound("dealCard2");
+	delay(500);
 	this->communityCard3.setTexture(this->deck.currentDeck[c3.index].cardFace);
+	this->render();
+	this->audioManager->playSound("dealCard1");
 }
 void PokerOfflineUi::updateCommunityCardsOnTurn(Card& card)
 {
 	this->communityCard4.setTexture(this->deck.currentDeck[card.index].cardFace);
+	this->render();
+	this->audioManager->playSound("dealCard1");
 }
 void PokerOfflineUi::updateCommunityCardsOnRiver(Card& card)
 {
 	this->communityCard5.setTexture(this->deck.currentDeck[card.index].cardFace);
+	this->render();
+	this->audioManager->playSound("dealCard1");
 }
 void PokerOfflineUi::updatePlayerCards(std::vector<Card> cards)
 {
 	
 	this->player1card1.setTexture(this->deck.currentDeck[cards[0].index].cardFace);
+	this->render();
+	this->audioManager->playSound("dealCard1");
+	
+	delay(500);
 	this->player1card2.setTexture(this->deck.currentDeck[cards[1].index].cardFace);
+	this->render();
+	this->audioManager->playSound("dealCard2");
 
 }
 

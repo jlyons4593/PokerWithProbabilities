@@ -6,7 +6,10 @@
 #include "Deck.h"
 #include "Poker.h"
 #include "HandWonUI.h"
+#include "AudioManager.h"
 #include "PokerHandsUI.h"
+#include <SFML/System.hpp>
+#include <SFML/Audio.hpp>
 //#include "PokerHand.h"
 
 
@@ -59,6 +62,29 @@ int main()
     //std::cout << "game over sequence" << std::endl;
     runGame();
     //runPokerHand();
+
+
+
+    //sf::SoundBuffer buffer;
+    //if (!buffer.loadFromFile("resources/WinSound.ogg"))
+    //{
+    //    // error handling
+    //}
+
+    //// Create the audio device with a stereo channel configuration
+    //sf::Sound sound;
+    //sound.setBuffer(buffer);
+    //sf::Sound::Status status = sound.getStatus();
+    //if (status == sf::Sound::Stopped)
+    //{
+    //    sound.play();
+    //}
+   
+    //AudioManager* audioManager = new AudioManager();
+    //audioManager->playSound("dealCard1");
+  
+    //audioManager->playSound("youWin");
+    
     return 0;
 }
 
