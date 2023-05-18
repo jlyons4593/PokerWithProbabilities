@@ -26,11 +26,13 @@ void UI::setCardProperties(sf::Sprite& card, sf::Texture& texture, float scale, 
 
 
 
-void UI::setTextProperties(sf::Text& text, const std::string& string, const sf::Vector2f& position, int characterSize, const sf::Color& fillColor)
+
+void UI::setTextProperties(sf::Text& text, const std::string& string, const sf::Vector2f& position, int characterSize, const sf::Color& fillColor /*= sf::Color::White*/)
 {
+	
 	text.setString(string);
 	text.setFillColor(fillColor);
-	text.setFont(this->font);
+	text.setFont(font);
 	text.setCharacterSize(characterSize);
 	sf::FloatRect rectangle = text.getLocalBounds();
 	text.setOrigin(rectangle.left + round(rectangle.width / 2.0f), rectangle.top + round(rectangle.height / 2.0f));

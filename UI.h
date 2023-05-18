@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+
 class UI
 {
 public:
@@ -24,7 +25,7 @@ public:
 	std::vector<std::shared_ptr<sf::Drawable>> drawables;
 
 	
-	void setTextProperties(sf::Text& text, const std::string& string, const sf::Vector2f& position, int characterSize, const sf::Color& fillColor);
+	void setTextProperties(sf::Text& text, const std::string& string, const sf::Vector2f& position, int characterSize, const sf::Color& fillColor /*= sf::Color::White*/);
 
 	void setRectangleProperties(sf::RectangleShape& rectangle, const sf::Vector2f& size, const sf::Vector2f& position, const sf::Color& fillColor);
 
@@ -39,5 +40,7 @@ public:
 
 	void pollEvents();
 
+
+	
 };
 

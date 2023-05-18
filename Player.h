@@ -3,7 +3,7 @@
 #define PLAYER_H
 class Player : public PlayerBase{
 public:
-    Decision makeDecision(int currentBet) override;
+    Decision makeDecision(int currentBet, int bettingRound) override;
     bool done;
     void setPlayer();
     Player();

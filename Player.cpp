@@ -9,7 +9,7 @@ void Player::setPlayer(){
     
 
 }
-Decision Player::makeDecision(int currentBet) {
+Decision Player::makeDecision(int currentBet, int bettingRound) {
     std::cout<<"frick";
         
 
@@ -24,7 +24,9 @@ Decision Player::makeDecision(int currentBet) {
     std::cout<<"Player bet amount = "<<this->chipsToBet<<std::endl;
     
    
-
+    if (decision == Decision::Check) {
+        chipsToBet = 0;
+    }
     
     // code to display the UI and wait for user input
     // when user input is received, set the result and signal the condition variable

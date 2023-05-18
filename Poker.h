@@ -76,7 +76,7 @@ std::vector<PlayerBase*> determineHandWinner();
 void setPlayerCards();
 void hand();
 void setPlayerBlinds();
-bool compareByValue(const Card& a, const Card& b);
+
 
 // determine hands rank
 bool isStraightFlush(PlayerBase *player);
@@ -96,6 +96,8 @@ void incrementState();
 void changeState();
 
 void gameOverState();
+void gameLostState();
+void gameWonState();
 void fullGame();
 void startHandState();
 
@@ -109,8 +111,9 @@ enum GameState{
     ShowDown,
     GameOver
 };
-
 int chipsPerPlayer;
+
+void setChips(int chips);
 
 GameState currentState;
 //Constructors and Destructors

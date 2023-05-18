@@ -5,7 +5,7 @@
 
 class AI : public PlayerBase{
 public:
-    Decision makeDecision(int currentBet) override;
+    Decision makeDecision(int currentBet, int bettingRound) override;
 
    
 

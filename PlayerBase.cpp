@@ -63,7 +63,7 @@ int PlayerBase::getChipsToBet(){
 }
 
 bool PlayerBase::payBlind(int amount){
-    std::cout<< "number of red chips = "<< this->numChips << std::endl;
+    std::cout<< "number of chips = "<< this->numChips << std::endl;
     if (amount > this->numChips){
         
         return false;

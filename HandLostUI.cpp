@@ -26,16 +26,31 @@ void HandLostUI::initHandLostText()
 void HandLostUI::initHandLostButtons()
 {
 	// Menu
-	this->setRectangleProperties(this->menuButton, sf::Vector2f(this->videomode.width / 10, this->videomode.height / 15), sf::Vector2f(this->videomode.width / 2 - 100, 400.f), sf::Color(0,100,0));
-	this->setTextProperties(this->menuText, "Menu", sf::Vector2f(this->menuButton.getPosition()), int(this->videomode.width / 80), sf::Color::Black);
+	this->setRectangleProperties(this->menuButton, sf::Vector2f(this->videomode.width / 10, this->videomode.height / 15), sf::Vector2f(this->videomode.width / 2 , 400.f), sf::Color::Black);
+	this->setTextProperties(this->menuText, "Menu", sf::Vector2f(this->menuButton.getPosition()), int(this->videomode.width / 80), sf::Color::White);
 
 	//Play again
-	this->setRectangleProperties(this->playAgainButton, sf::Vector2f(this->videomode.width / 10, this->videomode.height / 15), sf::Vector2f(this->videomode.width / 2 + 100, 400.f), sf::Color(0,100,0));
-	this->setTextProperties(this->playAgainText, "Play Again!", sf::Vector2f(this->playAgainButton.getPosition()), int(this->videomode.width / 80), sf::Color::Black);
+	//this->setRectangleProperties(this->playAgainButton, sf::Vector2f(this->videomode.width / 10, this->videomode.height / 15), sf::Vector2f(this->videomode.width / 2 + 100, 400.f), sf::Color::Black);
+	//this->setTextProperties(this->playAgainText, "Play Again!", sf::Vector2f(this->playAgainButton.getPosition()), int(this->videomode.width / 80), sf::Color::White);
 }
 
 void HandLostUI::processPlayerChoices()
 {
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		if (!this->lMBDown)
+		{
+			this->lMBDown = true;
+			if (this->menuButton.getGlobalBounds().contains(this->mousePositionFloat))
+			{
+				this->startMenu();
+			}
+		}
+	}
+	else
+	{
+		this->lMBDown = false;
+	}
 }
 
 void HandLostUI::renderGameObjects(sf::RenderTarget& target)
@@ -45,6 +60,20 @@ void HandLostUI::renderGameObjects(sf::RenderTarget& target)
 	target.draw(this->playAgainText);
 	target.draw(this->menuButton);
 	target.draw(this->menuText);
+}
+
+void HandLostUI::startMenu()
+{
+	Game game;
+	this->window->close();
+	while (game.isGameRunning())
+	{
+		//Update
+		game.update();
+
+		//Render
+		game.render();
+	}
 }
 
 void HandLostUI::update()
@@ -62,7 +91,7 @@ void HandLostUI::update()
 
 void HandLostUI::render()
 {
-	this->window->clear(sf::Color(255, 0, 0));
+	this->window->clear(sf::Color(0, 100, 0));
 
 
 	this->renderGameObjects(*this->window);

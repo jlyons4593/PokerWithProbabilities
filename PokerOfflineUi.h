@@ -1,3 +1,5 @@
+#ifndef POKEROFFLINEUI_H
+#define POKEROFFLINEUI_H
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Deck.h"
@@ -6,9 +8,10 @@
 #include "utils.hpp"
 #include "Player.h"
 #include "UI.h"
-#include "AudioManager.h"
-
+#include "OddsView.h"
 #include <thread>
+
+
 class PokerOfflineUi: public Observer, public UI
 {
 private:
@@ -58,8 +61,9 @@ private:
 
 	//// General Play Buttons
 	////OddsView
-	//sf::RectangleShape oddsViewButton;
-	//sf::Text oddsViewText;
+	sf::RectangleShape oddsViewButton;
+	sf::Text oddsViewText;
+
 	sf::RectangleShape pokerHandsButton;
 	sf::Text pokerHandsText;
 
@@ -120,6 +124,8 @@ private:
 	std::vector<sf::Text> statuses;
 
 	//PLayer chip amounts to display
+	int chipsPerPlayer;
+
 	int playerChipsInt;
 	int AIChipsInt;
 	int AI2ChipsInt;
@@ -147,13 +153,29 @@ private:
 
 	//TitleText
 	sf::Text title;
-	sf::Text settings;
+	sf::Text oddsViewInstructions;
 	sf::Text instructions;
 
-	//Font
-	sf::Font font;
+	//intruction variables
+	sf::RectangleShape backButton;
+	sf::Text backText;
+	sf::Text instructionTitle;
+	sf::Text instructionText;
+	void initialiseInstructions();
 
-	void launchPoker();
+	bool inInstruction;
+	void updateInstruction();
+	void renderInstruction();
+	void handleInstructionUpdate();
+
+	//odds view help variables
+	sf::Text oddsInstructionTitle;
+	sf::Text oddsInstructionText;
+	bool inOddsViewHelp;
+	void updateOddsViewHelp();
+	void renderOddsViewHelp();
+
+	
 
 	//handling for displaying pokerHands
 
@@ -192,7 +214,7 @@ private:
 	void updatePlayerUIs();
 	void updatePot();
 	void updateMousePositions();
-	void updatePlayerChips();
+	void updatePlayerChipsDisplay();
 	void pollEvents();
 	void processStartingClick();
 	void processPlayerChoices();
@@ -200,9 +222,22 @@ private:
 	void showPokerHands();
 	void processStateSwitch();
 	void processPokerHandsButton();
+	void processOddsViewButton();
 	void runPokerHandsWindow();
+	void runOddsViewWindow();
+	void launchOddsView();
 	void updatePlayerStatus(int playerIndex, std::string string);
 	void updatePlayerChips(int playerIndex, int currentBet);
+
+	void setWaitingStatuses();
+
+	
+
+	// ShowDown functions
+	void showdownUpdateCards(std::vector<Card> aiCards, std::vector<Card> ai2Cards, std::vector<Card> ai3Cards);
+	void showDownRemoveButtons();
+
+	bool isPractice;
 
 	//reference to player object
 	Player* player;
@@ -210,12 +245,16 @@ private:
 	bool readyUp;
 
 	bool isPokerHandsOpen;
+	bool isOddsViewOpen;
 
 	std::thread pokerHandsThread;
+	std::thread oddsViewThread;
+	std::thread launchOddsViewThread;
 
 	Poker* pokerGame;
 
-	AudioManager* audioManager;
+	OddsView* oddsView_;
+	//AudioManager* audioManager;
 
 	Decision decision;
 
@@ -226,9 +265,12 @@ public:
 	PokerOfflineUi();
 	virtual ~PokerOfflineUi();
 
+	void launchPoker();
+	void launchUI();
 	//override functions from observer
     void startGame() override;
-    void endGame() override;
+	void winGame()override;
+	void loseGame()override;
 	Decision waitForPlayerDecision(int currentBet);
 	void setPlayer(Player* player) override;
     void updateOnBet() override;
@@ -243,7 +285,10 @@ public:
 	void checkPlayer(int playerIndex) override;
 	void callPlayer(int playerIndex, int chipAmount) override;
 	void allInPlayer(int playerIndex) override;
-	
+	void updatePot(int pot)override;
+	void updateShowdown(std::vector<Card> aiCards, std::vector<Card> ai2Cards, std::vector<Card> ai3Cards, int winner) override;
+
+	void setVariables(int money, bool isPractice);
 
 	bool hasStarted;
 	void initialUpdate();
@@ -253,3 +298,4 @@ public:
 
 };
 
+#endif

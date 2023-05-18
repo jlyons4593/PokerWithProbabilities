@@ -57,19 +57,7 @@
     <ClCompile Include="PokerOfflineUi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PokerHandUI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PokerHand.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IPokerHandUI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IPokerHand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HandWonUI.cpp">
@@ -82,6 +70,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AudioManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OddsView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -140,13 +131,7 @@
     <ClInclude Include="Strategy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PokerHand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PokerHandUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UI.h">
@@ -158,12 +143,6 @@
     <ClInclude Include="utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IPokerHandUI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IPokerHand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HandWonUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -173,7 +152,10 @@
     <ClInclude Include="PokerHandsUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AudioManager.h">
+    <ClInclude Include="OddsView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HandEvaluator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

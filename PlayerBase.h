@@ -50,7 +50,7 @@ void setName(std::string name);
 
 std::string getName();
 
-virtual Decision makeDecision(int currentBet) = 0;
+virtual Decision makeDecision(int currentBet, int bettingRound) = 0;
 
 virtual bool payBlind(int amount);
 

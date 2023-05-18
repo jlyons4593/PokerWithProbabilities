@@ -7,12 +7,13 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 #include <string>
+#include "UI.h"
 #include "Deck.h"
 
 /*
 	Game engine wrapper class
 */
-class Game
+class Game: UI
 {
 private:
 
@@ -38,14 +39,14 @@ private:
 	// menu Text
 	sf::Text playVsAi;
 	sf::Text settings;
-	sf::Text howToPlay;
+	sf::Text disclaimer;
 	sf::Text instructions;
+	sf::Text practice;
 
 	//deck object
 	Deck deck;
 
-	// font
-	sf::Font font;
+	
 
 	// Menu Playing cards textures
 	sf::Texture heartsTen;
@@ -61,17 +62,80 @@ private:
 	sf::Sprite king;
 	sf::Sprite ace;
 
+	//back button variables
+	sf::RectangleShape backButton;
+	sf::Text backText;
+
+	// Disclaimer variables
+	sf::Text disclaimerTitle;
+	sf::Text disclaimerText;
+	
+
+	// Instruction variables
+	sf::Text instructionText;
+	sf::Text instructionTitle;
+
+	// Settings variables
+	sf::Text settingsText;
+	sf::Text playerMoneyText;
+	sf::Text volumeText;
+	sf::Text volumeDisplayText;
+	sf::Text playerMoneyDisplayText;
+	sf::Text volumeIncrementText;
+	sf::Text volumeDecrementText;
+	sf::Text playerMoneyIncrementText;
+	sf::Text playerMoneyDecrementText;
+
+	sf::RectangleShape volumeDisplayRect;
+	sf::RectangleShape playerMoneyDisplayRect;
+
+	sf::RectangleShape volumeIncrementButton;
+	sf::RectangleShape volumeDecrementButton;
+	sf::RectangleShape playerMoneyIncrementButton;
+	sf::RectangleShape playerMoneyDecrementButton;
+
+	//apply changes button
+	sf::Text applyChangesText;
+	sf::RectangleShape applyChangesButton;
+
+	int volume;
+	int playerMoney;
+
+
+	int masterPlayerMoney;
 
 	// Private functions
-
+	
 	void initialiseVariables();
 	void initialiseWindow();
 	void initialiseMenuBar();
 	void initialiseMenuScreen();
 	void initialisePlayingCards();
 
+
+	//Disclaimer scene
+	bool inDisclaimer;
+	void initialiseDisclaimerUI();
+	void updateDisclaimer();
+	void renderDisclaimer();
+	void handleDisclaimerUpdate();
+
+	//Instructions scene
+	bool inInstruction;
+	void initialiseInstructionUI();
+	void updateInstruction();
+	void renderInstruction();
+	void handleInstructionUpdate();
+
+	//Settings scene
+	bool inSettings;
+	void initialiseSettingsUI();
+	void updateSettings();
+	void renderSettings();
+	void handleSettingsUpdate();
+
 	//test functions
-	void deckLoader();
+	//void deckLoader();
 	
 	
 
@@ -85,7 +149,9 @@ public:
 
 
 	
-
+	sf::RenderWindow* getWindow() {
+		return window;
+	}
 	//functions
 	void pollEvents();
 	void update();

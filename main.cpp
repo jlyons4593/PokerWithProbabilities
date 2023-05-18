@@ -6,17 +6,56 @@
 #include "Deck.h"
 #include "Poker.h"
 #include "HandWonUI.h"
-#include "AudioManager.h"
+#include "AudioManager.cpp"
 #include "PokerHandsUI.h"
+//#include "OddsView.h"
 #include <SFML/System.hpp>
+#include "HandLostUI.h"
 #include <SFML/Audio.hpp>
-//#include "PokerHand.h"
+#include <vector>
 
 
 
 
+
+void namespaceTest() {
+    /*Deck deck;
+
+    std::vector<Card> player_cards;
+    player_cards.push_back(deck.currentDeck[1]);
+    player_cards.push_back(deck.currentDeck[2]);
+
+    std::vector < Card> community_cards;
+    community_cards.push_back(deck.currentDeck[3]);
+    community_cards.push_back(deck.currentDeck[4]);
+    community_cards.push_back(deck.currentDeck[5]);
+
+    if(HandEvaluator::isStraightFlush(player_cards, community_cards))
+    {
+        std::cout << "Shite" << std::endl;
+    }*/
+    
+
+
+
+}
 
 // Initialise the game engine
+
+
+void runOddsView() {
+    //OddsView game;
+    //game.init();
+    //while (game.isGameRunning)
+    //{
+    //  
+    //    //Update
+    //    game.update();
+
+    //    //Render
+    //    game.render();
+    //}
+}
 
 void runGame()
 {
@@ -52,38 +91,13 @@ void runGame()
 
 int main()
 {
-    /*HandWonUI* display = new HandWonUI();
-    while (display->isGameRunning) {
-        display->update();
-        display->render();
-
-    }*/
-    
-    //std::cout << "game over sequence" << std::endl;
+    //namespaceTest();
+    //runOddsView();
     runGame();
-    //runPokerHand();
+    //
 
-
-
-    //sf::SoundBuffer buffer;
-    //if (!buffer.loadFromFile("resources/WinSound.ogg"))
-    //{
-    //    // error handling
-    //}
-
-    //// Create the audio device with a stereo channel configuration
-    //sf::Sound sound;
-    //sound.setBuffer(buffer);
-    //sf::Sound::Status status = sound.getStatus();
-    //if (status == sf::Sound::Stopped)
-    //{
-    //    sound.play();
-    //}
    
-    //AudioManager* audioManager = new AudioManager();
-    //audioManager->playSound("dealCard1");
-  
-    //audioManager->playSound("youWin");
+
     
     return 0;
 }

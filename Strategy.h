@@ -4,7 +4,7 @@
 
 class Strategy {
 public:
-    virtual Decision makeDecision(int currentBet) = 0;
+    virtual Decision makeDecision(int currentBet, int bettingRound) = 0;
 };
 
 

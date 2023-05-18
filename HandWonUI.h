@@ -1,6 +1,7 @@
 #pragma once
 #include "UI.h"
 #include <SFML/Graphics.hpp>
+#include "Game.h"
 
 class HandWonUI: public UI
 {
@@ -19,6 +20,7 @@ private:
 	void initHandWonButtons();
 	void processPlayerChoices();
 	void renderGameObjects(sf::RenderTarget& target);
+	void startMenu();
 	
 
 public:

@@ -5,7 +5,13 @@
 #include "ObserverPattern.cpp"
 #include "Delay.hpp"
 #include "PokerHandsUI.h"
-#include <thread>
+#include "AudioManager.cpp"
+#include "HandWonUI.h"
+#include "HandLostUI.h"
+
+
+
+
 
 void PokerOfflineUi::initialiseVariables()
 {
@@ -22,7 +28,9 @@ void PokerOfflineUi::initialiseVariables()
 	this->hasFolded = false;
 	this->isLookingAtHands = true;
 	this->isPokerHandsOpen = false;
-	this->audioManager = new AudioManager();
+	this->isOddsViewOpen = false;
+	this->inOddsViewHelp = false;
+	this->inInstruction = false;
 
 }
 void PokerOfflineUi::launchPoker()
@@ -30,8 +38,124 @@ void PokerOfflineUi::launchPoker()
 
 	this->pokerGame = new Poker();
 	this->pokerGame->attach(this);
-
+	this->pokerGame->setChips(this->chipsPerPlayer);
 	this->setPlayerChips(this->pokerGame->chipsPerPlayer);
+
+	if (this->isPractice) {
+		this->oddsView_ = new OddsView();
+		this->pokerGame->attach(this->oddsView_);
+	}
+	
+
+	
+}
+
+void PokerOfflineUi::launchOddsView() {
+	
+}
+void PokerOfflineUi::setWaitingStatuses()
+{
+	AIStatus.setString("Waiting");
+	AI2Status.setString("Waiting");
+	AI3Status.setString("Waiting");
+	this->render();
+
+}
+void PokerOfflineUi::initialiseInstructions()
+{
+	std::string title = "Instructions";
+	this->setTextProperties(this->instructionTitle, title, sf::Vector2f(this->videomode.width / 2, this->videomode.height / 2 - 350), int(videomode.width / 40), sf::Color::White);
+	std::string text = "Look at your hand and the cards in the middle by combinig the 2 sets of cards you want to see how\ngood your hand is and bet accordingly.\nIf you do not know how the card ranking system works click on the Poker Hands button to provide\nyou more information.\nUse the Bet increment and decrementer buttons to choose how much you wish to bet. Once you \nhave settled on a number click confirm and ready up.\nIf you confirm with 0 as your bet amount and ready up you will check or call depending on whether \nthere is a bet to match.\nYou can also click the fold button and confirm to allow you to not play the hand. \nWin the hand to unlock achievements.";
+	this->setTextProperties(this->instructionText, text, sf::Vector2f(50, this->videomode.height / 2 - 300), int(videomode.width / 50), sf::Color::White);
+	this->instructionText.setOrigin(0, 0);
+	this->setTextProperties(this->backText, "Back", sf::Vector2f(50, 50), int(videomode.width / 50), sf::Color::White);
+	this->setRectangleProperties(this->backButton, sf::Vector2f(70.f, 80.f), sf::Vector2f(50, 50), sf::Color::Black);
+
+	title = "Odds View Help";
+	text = "Click on the odds view button in the top right to view your odds!\n\n1. The Pot odds is the percentage of time you will need to win the hand to break even when you call \nfor $10 \n\n2. The expected value  is a measure of the average amount of money you can expect to win or lose\nover the long run when betting $20. It takes into account the probability of different outcomes \nand their payoffs.\n\n3. Hand strength is an estimate of the percentage of hands that beat your hand. \n\n4. Outs is the number of cards left in the deck that would improve your hand";
+	this->setTextProperties(this->oddsInstructionTitle, title, sf::Vector2f(this->videomode.width / 2, this->videomode.height / 2 - 350), int(videomode.width / 40), sf::Color::White);
+	this->setTextProperties(this->oddsInstructionText, text, sf::Vector2f(50, this->videomode.height / 2 - 300), int(videomode.width / 50), sf::Color::White);
+	this->oddsInstructionText.setOrigin(0, 0);
+
+}
+void PokerOfflineUi::updateInstruction()
+{
+	this->pollEvents();
+
+	// Update mouse positions
+	this->updateMousePositions();
+	this->handleInstructionUpdate();
+}
+void PokerOfflineUi::renderInstruction()
+{
+	this->window->clear(sf::Color(0, 100, 0));
+
+
+
+	//draw menu
+	this->window->draw(this->menuBar);
+	this->window->draw(this->title);
+	this->window->draw(this->instructionTitle);
+
+	this->window->draw(this->instructionText);
+	this->window->draw(this->backButton);
+	this->window->draw(this->backText);
+
+
+
+
+	this->window->display();
+}
+void PokerOfflineUi::handleInstructionUpdate()
+{
+	//check if clicked
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		if (this->backButton.getGlobalBounds().contains(this->mousePositionFloat))
+		{
+			if (!this->lMBDown)
+			{
+				AudioManager::getInstance().playMenuNoise();
+				this->lMBDown = true;
+				
+				this->inInstruction = false;
+				this->inOddsViewHelp = false;
+			}
+		}
+
+	}
+	else
+	{
+		this->lMBDown = false;
+	}
+}
+void PokerOfflineUi::updateOddsViewHelp()
+{
+	this->pollEvents();
+
+	// Update mouse positions
+	this->updateMousePositions();
+	this->handleInstructionUpdate();
+}
+void PokerOfflineUi::renderOddsViewHelp()
+{
+	this->window->clear(sf::Color(0, 100, 0));
+
+
+
+	//draw menu
+	this->window->draw(this->menuBar);
+	this->window->draw(this->title);
+	this->window->draw(this->oddsInstructionTitle);
+
+	this->window->draw(this->oddsInstructionText);
+	this->window->draw(this->backButton);
+	this->window->draw(this->backText);
+
+
+
+
+	this->window->display();
 }
 void PokerOfflineUi::setPlayerChips(int chips){
 	this->playerChipsInt = chips;
@@ -70,14 +194,6 @@ void PokerOfflineUi::initialiseMenuBar()
 	this->title.setOrigin(titleRectangle.left + round(titleRectangle.width / 2.0f), titleRectangle.top + round(titleRectangle.height / 2.0f));
 	this->title.setPosition(this->videomode.width / 2, 50.f);
 
-	// Settings Text
-	this->settings.setString("Settings");
-	this->settings.setFillColor(sf::Color::White);
-	this->settings.setFont(font);
-	this->settings.setCharacterSize(int(this->videomode.width / 35));
-	sf::FloatRect settingsRectangle = this->settings.getLocalBounds();
-	this->settings.setOrigin(settingsRectangle.left + round(settingsRectangle.width / 2.0f), settingsRectangle.top + round(settingsRectangle.height / 2.0f));
-	this->settings.setPosition(this->videomode.width/2 - this->videomode.width / 3, 50.f);
 
 	// Instructions Text
 	this->instructions.setString("Instructions");
@@ -89,6 +205,10 @@ void PokerOfflineUi::initialiseMenuBar()
 	this->instructions.setPosition(this->videomode.width / 2 + this->videomode.width/3, 50.f);
 
 
+	if (this->isPractice) {
+		this->setTextProperties(this->oddsViewInstructions, "Odds View Help", sf::Vector2f(this->videomode.width / 2 - this->videomode.width / 3, 50.f), int(this->videomode.width / 35), sf::Color::White);
+	}
+
 }
 
 void PokerOfflineUi::initialisePlayScreenObjects()
@@ -96,6 +216,7 @@ void PokerOfflineUi::initialisePlayScreenObjects()
 	this->initialiseCommunityCardSprites();
 	this->initialisePlayerCardsSprites();
 	this->initialiseGeneralPlayButtons();
+	this->initialiseInstructions();
 }
 
 void PokerOfflineUi::initialiseCommunityCardSprites()
@@ -201,30 +322,11 @@ void PokerOfflineUi::initialiseGeneralPlayButtons()
 	this->pokerHandsText.setOrigin(pokerHandsRectangle.left + round(pokerHandsRectangle.width / 2.0f), pokerHandsRectangle.top + round(pokerHandsRectangle.height / 2.0f));
 	this->pokerHandsText.setPosition(this->pokerHandsButton.getPosition());
 
-	/*this->pokerHandsTexture.loadFromFile("Resources/pokerHand.png");
-
-	this->pokerHandsSprite.setTexture(this->pokerHandsTexture);
-	this->pokerHandsSprite.setScale(3.0f, 3.0f);
-	sf::FloatRect cardRectangle = this->pokerHandsSprite.getLocalBounds();
-	this->pokerHandsSprite.setOrigin(cardRectangle.left + round(cardRectangle.width / 2.0f), cardRectangle.top + round(cardRectangle.height / 2.0f));
-	this->pokerHandsSprite.setPosition((this->videomode.width / 2), 270.f);
-
-	this->closePokerHandsButton.setFillColor(sf::Color::Red);*/
-
+	if (this->isPractice) {
+		this->setRectangleProperties(this->oddsViewButton, sf::Vector2f(this->videomode.width / 12, this->videomode.height / 20), sf::Vector2f(1750.f, 320.f), sf::Color::Red);
+		this->setTextProperties(this->oddsViewText, "Odds View", sf::Vector2f(this->oddsViewButton.getPosition()), int(this->videomode.width / 80), sf::Color::Black);
+	}
 	
-	// sf::FloatRect pokerHandsRectangle = this->gameStateRect.getLocalBounds();
-	// this->gameStateRect.setOrigin(pokerHandsRectangle.left + round(pokerHandsRectangle.width / 2.0f), pokerHandsRectangle.top + round(pokerHandsRectangle.height / 2.0f));
-	//this->closePokerHandsText.setPosition(this->videomode.width/2, this->videomode.height/2);
-
-	//Start game Text
-	/*this->closePokerHandsText.setString("Close");
-	this->closePokerHandsText.setFillColor(sf::Color::Black);
-	this->closePokerHandsText.setFont(font);
-	this->closePokerHandsText.setCharacterSize(int(this->videomode.width / 80));
-	pokerHandsRectangle = this->closePokerHandsButton.getLocalBounds();
-	this->closePokerHandsText.setOrigin(pokerHandsRectangle.left + round(pokerHandsRectangle.width / 2.0f), pokerHandsRectangle.top + round(pokerHandsRectangle.height / 2.0f));
-	this->closePokerHandsText.setPosition(this->gameStateRect.getPosition());*/
-
 
 }
 void PokerOfflineUi::initialiseReadyUpButton()
@@ -447,7 +549,8 @@ void PokerOfflineUi::setPlayer(Player* player){
 	
 }
 Decision PokerOfflineUi::waitForPlayerDecision(int currentBet){
-
+	this->setWaitingStatuses();
+	this->playerBetAmount = 0;
 	while(!this->readyUp){
 		this->update();
 		this->render();
@@ -459,9 +562,29 @@ Decision PokerOfflineUi::waitForPlayerDecision(int currentBet){
 	return this->decision;
 }
 
-void PokerOfflineUi::endGame()
+void PokerOfflineUi::winGame()
 {
 	this->~PokerOfflineUi();
+
+	HandWonUI* display = new HandWonUI();
+
+	while (display->isGameRunning) {
+		display->update();
+		display->render();
+
+	}
+
+}
+void PokerOfflineUi::loseGame()
+{
+	this->window->close();
+	HandLostUI* display = new HandLostUI();
+
+	while (display->isGameRunning) {
+		display->update();
+		display->render();
+
+	}
 }
 void PokerOfflineUi::updateOnBet()
 {
@@ -471,42 +594,68 @@ void PokerOfflineUi::updateCommunityCardsOnFlop(Card& c1,Card& c2,Card& c3)
 {
 	this->communityCard1.setTexture(this->deck.currentDeck[c1.index].cardFace);
 	this->render();
-	this->audioManager->playSound("dealCard1");
+	
+	AudioManager::getInstance().playSound("dealCard1");
 	delay(500);
 	this->communityCard2.setTexture(this->deck.currentDeck[c2.index].cardFace);
 	this->render();
-	this->audioManager->playSound("dealCard2");
+	
+	AudioManager::getInstance().playSound("dealCard2");
 	delay(500);
 	this->communityCard3.setTexture(this->deck.currentDeck[c3.index].cardFace);
 	this->render();
-	this->audioManager->playSound("dealCard1");
+	
+	AudioManager::getInstance().playSound("dealCard1");
 }
 void PokerOfflineUi::updateCommunityCardsOnTurn(Card& card)
 {
 	this->communityCard4.setTexture(this->deck.currentDeck[card.index].cardFace);
 	this->render();
-	this->audioManager->playSound("dealCard1");
+	
+	AudioManager::getInstance().playSound("dealCard1");
 }
 void PokerOfflineUi::updateCommunityCardsOnRiver(Card& card)
 {
 	this->communityCard5.setTexture(this->deck.currentDeck[card.index].cardFace);
 	this->render();
-	this->audioManager->playSound("dealCard1");
+
+	AudioManager::getInstance().playSound("dealCard1");
 }
 void PokerOfflineUi::updatePlayerCards(std::vector<Card> cards)
 {
 	
 	this->player1card1.setTexture(this->deck.currentDeck[cards[0].index].cardFace);
 	this->render();
-	this->audioManager->playSound("dealCard1");
+	
+	AudioManager::getInstance().playSound("dealCard1");
 	
 	delay(500);
 	this->player1card2.setTexture(this->deck.currentDeck[cards[1].index].cardFace);
 	this->render();
-	this->audioManager->playSound("dealCard2");
+	
+	AudioManager::getInstance().playSound("dealCard2");
 
 }
 
+void PokerOfflineUi::updateShowdown(std::vector<Card> aiCards, std::vector<Card> ai2Cards, std::vector<Card> ai3Cards, int winner) 
+{
+	this->showdownUpdateCards(aiCards, ai2Cards,ai3Cards);
+	this->render();
+	
+	sf::sleep(sf::milliseconds(5000));
+	this->window->close();
+	
+	if (winner == 0) {
+		winGame();
+	}
+	else {
+		loseGame();
+	}
+	
+	
+
+
+}
 void PokerOfflineUi::initialisePot(){
 	this->potText.setString("Pot:\n "+std::to_string(this->potAmount));
 	this->potText.setFillColor(sf::Color::Transparent);
@@ -591,7 +740,7 @@ void PokerOfflineUi::showPokerHands(){
 	
 }
 
-void PokerOfflineUi::updatePlayerChips(){
+void PokerOfflineUi::updatePlayerChipsDisplay(){
 	this->playerChips.setString("Your Chips:\n "+std::to_string(this->playerChipsInt));
 	this->AIChips.setString("Chips:\n "+std::to_string(this->AIChipsInt));
 	this->AI2Chips.setString("Chips:\n "+std::to_string(this->AI2ChipsInt));
@@ -601,7 +750,7 @@ void PokerOfflineUi::updatePlayerChips(){
 void PokerOfflineUi::renderText(sf::RenderTarget& target)
 {
 	target.draw(this->title);
-	target.draw(this->settings);
+	target.draw(this->oddsViewInstructions);
 	target.draw(this->instructions);
 	target.draw(this->pokerHandsText);
 	target.draw(this->gameStateText);
@@ -628,6 +777,12 @@ void PokerOfflineUi::renderText(sf::RenderTarget& target)
 	target.draw(AIChips);
 	target.draw(AI2Chips);
 	target.draw(AI3Chips);
+
+	if (this->isPractice) {
+		
+		target.draw(this->oddsViewButton);
+		target.draw(this->oddsViewText);
+	}
 
 	/*if (this->isLookingAtHands){
 		target.draw(this->pokerHandsSprite);
@@ -702,6 +857,7 @@ const bool PokerOfflineUi::isGameRunning() const
 	return this->window->isOpen();
 }
 
+
 void PokerOfflineUi::processStartingClick(){
 	//check if clicked
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
@@ -714,7 +870,25 @@ void PokerOfflineUi::processStartingClick(){
 				this->startGame();
 				
 			}
+			else if (this->instructions.getGlobalBounds().contains(this->mousePositionFloat)) {
+				AudioManager::getInstance().playMenuNoise();
+				this->inInstruction = true;
+
+				while (this->inInstruction) {
+					this->updateInstruction();
+					this->renderInstruction();
+				}
+			}
 			
+			else if (this->oddsViewInstructions.getGlobalBounds().contains(this->mousePositionFloat)&&this->isPractice) {
+				AudioManager::getInstance().playMenuNoise();
+				this->inOddsViewHelp = true;
+
+				while (this->inOddsViewHelp) {
+					this->updateOddsViewHelp();
+					this->renderOddsViewHelp();
+				}
+			}
 		}
 		
 		
@@ -741,6 +915,10 @@ void PokerOfflineUi::processPlayerChoices()
 			}
 			else if (this->pokerHandsButton.getGlobalBounds().contains(this->mousePositionFloat)) {
 				this->processPokerHandsButton();
+			}
+			else if (this->oddsViewButton.getGlobalBounds().contains(this->mousePositionFloat)) {
+				
+				this->processOddsViewButton();
 			}
 			else if (this->raiseIncrementButton.getGlobalBounds().contains(this->mousePositionFloat)){
 				if(this->chipsRaisedInt==this->playerChipsInt){
@@ -780,10 +958,25 @@ void PokerOfflineUi::processPlayerChoices()
 				std::cout << "folding" << std::endl;
 				this->hasFolded = true;
 			}
-			else
-			{
-				this->raiseBoxActive = false;
-				return;
+			
+			else if (this->instructions.getGlobalBounds().contains(this->mousePositionFloat)) {
+				AudioManager::getInstance().playMenuNoise();
+				this->inInstruction = true;
+
+				while (this->inInstruction) {
+					this->updateInstruction();
+					this->renderInstruction();
+				}
+			}
+
+			else if (this->oddsViewInstructions.getGlobalBounds().contains(this->mousePositionFloat) && this->isPractice) {
+				AudioManager::getInstance().playMenuNoise();
+				this->inOddsViewHelp = true;
+
+				while (this->inOddsViewHelp) {
+					this->updateOddsViewHelp();
+					this->renderOddsViewHelp();
+				}
 			}
 			
             
@@ -814,6 +1007,7 @@ void PokerOfflineUi::processReadyUp(){
 	else if(this->playerBetAmount==0){
 		
 		if (this->groupHighBet-this->playerHighBet!=0){
+
 			this->decision = Decision::Call;
 		}
 		else{
@@ -842,6 +1036,7 @@ void PokerOfflineUi::updatePlayerStatus(int playerIndex, std::string string)
 	else if (playerIndex == 3) {
 		this->AI3Status.setString(string);
 	}
+	this->render();
 }
 void PokerOfflineUi::runPokerHandsWindow()
 {
@@ -851,32 +1046,55 @@ void PokerOfflineUi::runPokerHandsWindow()
 		ui->render();
 	}
 }
+void PokerOfflineUi::runOddsViewWindow()
+{
+	
+
+	this->oddsView_->init();
+	while (this->oddsView_->isGameRunning) {
+		oddsView_->update();
+		oddsView_->render();
+	}
+}
 void PokerOfflineUi::updatePlayerChips(int playerIndex, int currentBet)
 {
+	std::cout << currentBet << std::endl;
 	std::string string = std::to_string(currentBet);
 	if (playerIndex == 0) {
 		this->playerChips.setString(string);
 	}
 	else if (playerIndex == 1) {
+		std::cout << "here" << std::endl;
+		this->AIChipsInt -= currentBet;
 		this->AIChips.setString(string);
+		this->potAmount += currentBet;
+		
 	}
 	else if (playerIndex == 2) {
+		this->AI2ChipsInt -= currentBet;
 		this->AI2Chips.setString(string);
+		this->potAmount += currentBet;
 	}
 	else if (playerIndex == 3) {
+		this->AI3ChipsInt -= currentBet;
+		
 		this->AI3Chips.setString(string);
+		this->potAmount += currentBet;
 	}
+	
 }
 void PokerOfflineUi::foldPlayer(int playerIndex)
 {
 	updatePlayerStatus(playerIndex, "Fold!");
-	
+	this->render();
 
 }
 void PokerOfflineUi::callPlayer(int playerIndex, int chipAmount){
 	std::cout<<"in pokerOfflineUi "<<chipAmount<<std::endl;
 	updatePlayerStatus(playerIndex, "Call!");
 	updatePlayerChips(playerIndex, chipAmount);
+
+	this->render();
 	//this->statuses[playerIndex].setString("Player has called for\n " + std::to_string(chipAmount) + " chips");
 	// this->potAmount+= currentBet;
 	
@@ -885,8 +1103,25 @@ void PokerOfflineUi::checkPlayer(int playerIndex)
 {
 	std::cout << "check" << std::endl;
 	updatePlayerStatus(playerIndex, "Check!");
+	this->render();
 
 
+}
+
+void PokerOfflineUi::launchUI()
+{
+	this->launchPoker();
+	this->initialiseVariables();
+	this->initialiseWindow();
+	this->initialiseMenuBar();
+	this->initialisePot();
+	this->initialisePlayerChips();
+	this->initialiseGameStateButton();
+	this->initialiseReadyUpButton();
+	this->initialisePlayScreenObjects();
+	this->initialiseBettingObjects();
+	this->initialiseFoldButton();
+	this->initialisePlayerStatuses();
 }
 
 
@@ -938,6 +1173,14 @@ void PokerOfflineUi::processPokerHandsButton()
 {
 	this->isPokerHandsOpen = true;
 	this->pokerHandsThread = std::thread(&PokerOfflineUi::runPokerHandsWindow, this);
+	
+
+}
+
+void PokerOfflineUi::processOddsViewButton()
+{
+	this->isOddsViewOpen = true;
+	this->oddsViewThread = std::thread(&PokerOfflineUi::runOddsViewWindow, this);
 }
 
 
@@ -955,35 +1198,43 @@ void PokerOfflineUi::pollEvents()
 	}
 }
 
+void PokerOfflineUi::setVariables(int money, bool isPractice) {
+	this->chipsPerPlayer = money;
+	this->isPractice = isPractice;
+}
+
+void PokerOfflineUi::updatePot(int pot)
+{
+
+}
+
 
 void PokerOfflineUi::startBetting(){
 	this->pokerGame->bettingState();
 }
+void PokerOfflineUi::showdownUpdateCards(std::vector<Card> aiCards, std::vector<Card> ai2Cards, std::vector<Card> ai3Cards)
+{
+	player2card1.setTexture(deck.currentDeck[aiCards[0].index].cardFace);
+	player2card2.setTexture(deck.currentDeck[aiCards[1].index].cardFace);
+
+	player3card1.setTexture(deck.currentDeck[ai2Cards[0].index].cardFace);
+	player3card2.setTexture(deck.currentDeck[ai2Cards[1].index].cardFace);
+
+	player4card1.setTexture(deck.currentDeck[ai3Cards[0].index].cardFace);
+	player4card2.setTexture(deck.currentDeck[ai3Cards[1].index].cardFace);
+}
 //Constructor and Destructor
 PokerOfflineUi::PokerOfflineUi()
 {
-	this->launchPoker();
-	this->initialiseVariables();
-	this->initialiseWindow();
-	this->initialiseMenuBar();
-	this->initialisePot();
-	this->initialisePlayerChips();
-	this->initialiseGameStateButton();
-	this->initialiseReadyUpButton();
-	this->initialisePlayScreenObjects();
-	this->initialiseBettingObjects();
-	this->initialiseFoldButton();
-	this->initialisePlayerStatuses();
 	
-	// this->t1 = std::thread(&PokerOfflineUi::launchPoker, this);
-	// std::cout<<"UI"<<std::endl;
-	// this->t1.join();
 
 }
 
 PokerOfflineUi::~PokerOfflineUi()
 {
 	this->pokerHandsThread.join();
+	//this->oddsViewThread.join();
+	//this->launchOddsViewThread.join();
 	delete this->window;
 }
 

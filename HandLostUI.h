@@ -1,7 +1,7 @@
 #pragma once
 #include "UI.h"
 #include <SFML/Graphics.hpp>
-
+#include "Game.h"
 class HandLostUI : public UI
 {
 private:
@@ -19,7 +19,7 @@ private:
 	void initHandLostButtons();
 	void processPlayerChoices();
 	void renderGameObjects(sf::RenderTarget& target);
-
+	void startMenu();
 
 public:
 
