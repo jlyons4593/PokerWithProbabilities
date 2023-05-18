@@ -87,7 +87,7 @@ private:
 	//void calculateOuts();
 	//bool shouldRemove(const Card& card, const std::vector<int>& indicesToRemove);
 	//Deck outsDeck;
-	//int outs;
+	int outs;
 
 	// Expected value
 	//void calculateExpectedValue();

@@ -286,8 +286,8 @@ void OddsView::updateCommunityCardsOnFlop(Card& c1, Card& c2, Card& c3)
 	this->community_card2_sprite.setTexture(this->deck.currentDeck[c2.index].cardFace);
 	this->community_card3 = c3;
 	this->community_card3_sprite.setTexture(this->deck.currentDeck[c3.index].cardFace);
-	//this->calculateHandStrength();
-	//this->hand_strength_value_text_.setString(std::to_string(this->percentHands) + "%");
+	this->calculateHandStrength();
+	this->hand_strength_value_text_.setString(std::to_string(this->percentHands) + "%");
 	//this->calculateOuts();
 	//this->outs_value_text_.setString(std::to_string(this->outs));
 }
@@ -297,8 +297,8 @@ void OddsView::updateCommunityCardsOnTurn(Card& card)
 	this->community_card4 = card;
 	this->community_card4_sprite.setTexture(this->deck.currentDeck[card.index].cardFace);
 
-	//this->calculateHandStrength();
-	//this->hand_strength_value_text_.setString(std::to_string(this->percentHands) + "%");
+	this->calculateHandStrength();
+	this->hand_strength_value_text_.setString(std::to_string(this->percentHands) + "%");
 	//this->calculateOuts();
 	//this->outs_value_text_.setString(std::to_string(this->outs));
 }
@@ -307,8 +307,8 @@ void OddsView::updateCommunityCardsOnRiver(Card& card)
 {
 	this->community_card5 = card;
 	this->community_card5_sprite.setTexture(this->deck.currentDeck[card.index].cardFace);
-	/*this->calculateHandStrength();
-	this->hand_strength_value_text_.setString(std::to_string(this->percentHands) + "%");*/
+	this->calculateHandStrength();
+	this->hand_strength_value_text_.setString(std::to_string(this->percentHands) + "%");
 }
 
 void OddsView::updateShowdown(std::vector<Card> aiCards, std::vector<Card> ai2Cards, std::vector<Card> ai3Cards, int winner)
@@ -362,7 +362,7 @@ void OddsView::update()
 	// Update mouse positions
 	this->updateMousePositions();
 
-	/*this->processPlayerChoices();*/
+	this->processPlayerChoices();
 
 
 }
@@ -373,7 +373,7 @@ void OddsView::render()
 	this->window->clear(sf::Color(0, 100, 0));
 
 
-	/*this->renderGameObjects(*this->window);*/
+	this->renderGameObjects(*this->window);
 
 
 	this->window->display();
@@ -386,7 +386,7 @@ void OddsView::init()
 	this->initialiseMenuBar();
 	this->initialisePlayerCards();
 	this->initialiseCommunityCards();
-	/*this->initialiseOutsText();*/
+	this->initialiseOutsText();
 	this->initialisePotOdds();
 	this->initialiseHandStrengthText();
 	this->initialiseExpectedValue();
@@ -394,7 +394,7 @@ void OddsView::init()
 
 OddsView::OddsView()
 {
-	/*this->outs = 50;*/
+	this->outs = 50;
 	this->potOdds = 100;
 	player_card1.cardFace = deck.backOfCardTexture;
 	player_card2.cardFace = deck.backOfCardTexture;
