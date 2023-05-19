@@ -9,11 +9,10 @@ private:
 	sf::Texture pokerHandsTexture;
 	sf::Sprite pokerHandsSprite;
 
-
+	// Functions for UI that displays the hands in poker
 	void initVariables();
 	void initialiseWindow();
 	void initImage();
-	
 	void renderGameObjects(sf::RenderTarget& target);
 
 

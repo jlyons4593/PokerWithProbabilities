@@ -50,14 +50,6 @@ private:
 	sf::Sprite player3card2;
 	sf::Sprite player4card1;
 	sf::Sprite player4card2;
-	// sf::Sprite player5card1;
-	// sf::Sprite player5card2;
-	// sf::Sprite player6card1;
-	// sf::Sprite player6card2;
-	// sf::Sprite player7card1;
-	// sf::Sprite player7card2;
-	// sf::Sprite player8card1;
-	// sf::Sprite player8card2;
 
 	//// General Play Buttons
 	////OddsView
@@ -144,9 +136,7 @@ private:
 
 	int chipsRaisedInt;
 	bool raiseBoxActive;
-	
-	// sf::Text checkButton;
-	// sf::RectangleShape checkButton;
+
 	bool keyDown;
 
 	Deck deck;
@@ -267,6 +257,7 @@ public:
 
 	void launchPoker();
 	void launchUI();
+
 	//override functions from observer
     void startGame() override;
 	void winGame()override;
@@ -288,6 +279,8 @@ public:
 	void updatePot(int pot)override;
 	void updateShowdown(std::vector<Card> aiCards, std::vector<Card> ai2Cards, std::vector<Card> ai3Cards, int winner) override;
 
+
+	// Function for deciding between Practice mode and normal
 	void setVariables(int money, bool isPractice);
 
 	bool hasStarted;

@@ -148,10 +148,7 @@ public:
 	const bool isGameRunning() const;
 
 
-	
-	sf::RenderWindow* getWindow() {
-		return window;
-	}
+
 	//functions
 	void pollEvents();
 	void update();

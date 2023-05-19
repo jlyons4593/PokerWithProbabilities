@@ -3,7 +3,7 @@
 void HandWonUI::initVariables()
 {
 	this->isGameRunning = true;
-	this->font.loadFromFile("Fonts/Roboto-Black.ttf");
+	this->font.loadFromFile("Fonts/OpenDyslexic-Regular.otf");
 }
 void HandWonUI::initialiseWindow()
 {
@@ -25,8 +25,8 @@ void HandWonUI::initHandWonText()
 void HandWonUI::initHandWonButtons()
 {
 	// Menu
-	this->setRectangleProperties(this->menuButton, sf::Vector2f(this->videomode.width / 10, this->videomode.height / 15), sf::Vector2f(this->videomode.width / 2, 400.f), sf::Color::Red);
-	this->setTextProperties(this->menuText, "Back to Menu", sf::Vector2f(this->menuButton.getPosition()), int(this->videomode.width / 80), sf::Color::Black);
+	this->setRectangleProperties(this->menuButton, sf::Vector2f(this->videomode.width / 10, this->videomode.height / 15), sf::Vector2f(this->videomode.width / 2, 400.f), sf::Color::Black);
+	this->setTextProperties(this->menuText, "Back to Menu", sf::Vector2f(this->menuButton.getPosition()), int(this->videomode.width / 80), sf::Color::White);
 	
 	//Play again
 	//this->setRectangleProperties(this->playAgainButton, sf::Vector2f(this->videomode.width / 10, this->videomode.height / 15), sf::Vector2f(this->videomode.width / 2+100, 400.f), sf::Color::Red);

@@ -13,6 +13,7 @@ private:
 	sf::Text menuText;
 	sf::RectangleShape menuButton;
 
+	// functions to create screen
 	void initVariables();
 	void initialiseWindow();
 	void initHandLostText();

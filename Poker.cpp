@@ -60,12 +60,13 @@ void Poker::initializePlayers(){
     {
         std::cout<<i<<std::endl;
 
-        if( i %2 ==0){
-            this->players.push_back(new AI(new RandomStrategy));
+        if( i ==0){
+            
+            this->players.push_back(new AI(new HandStrengthStrategy));
             
         }
         else{
-            this->players.push_back(new AI(new HandStrengthStrategy));
+            this->players.push_back(new AI(new RandomStrategy));
         }
         this->players[i + 1]->setName("AI" + std::to_string(i+1));
         this->players[i + 1]->playerIndex = i + 1;
@@ -608,9 +609,10 @@ void Poker::bettingState(){
 
     int bettingRound = 0;
     
+    int prevBet;
     while(!bettingComplete)
     {
-        
+        int numPlayersChecked =0;
         bettingRound++;
         bool allPlayersChecked = false;
   
@@ -629,17 +631,46 @@ void Poker::bettingState(){
                 this->removePlayerFromHand(player);
                 
                 
-                std::cout << "Name = " << player->getName() << std::endl;
+       
                 
                 
             }
             else if (decision == Decision::Call){
                 
                 int chipsToAdd;
+                if (player->getName() == "Guest") {
+                    if (player->takeChips(this->currentBetAmount-prevBet)) {
+                        std::cout << player->getName() << " has called for " << this->currentBetAmount << std::endl;
+                        this->notifyPlayerCall(player->playerIndex, this->currentBetAmount);
+                        if (player->getName() == "Guest") {
+                            chipsToAdd = 0;
+                            this->currentBetAmount = 0;
+
+                        }
+                        else {
+                            chipsToAdd = this->currentBetAmount;
+
+                        }
+                    }
+                    else {
+                        std::cout << player->getName() << " else loop has called for " << this->currentBetAmount << std::endl;
+                        chipsToAdd = player->allIn();
+
+                        this->notifyPlayerAllIn(player->playerIndex);
+                    }
+                }
                 if(player->takeChips(this->currentBetAmount)){
                     std::cout<<player->getName()<<" has called for " << this->currentBetAmount<<std::endl;
                     this->notifyPlayerCall(player->playerIndex, this->currentBetAmount);
-                    chipsToAdd = this->currentBetAmount;
+                    if (player->getName() == "Guest") {
+                        chipsToAdd = 0;
+                        this->currentBetAmount = 0;
+
+                    }
+                    else {
+                        chipsToAdd = this->currentBetAmount;
+
+                    }
                 }
                 else{
                     std::cout<<player->getName()<<" else loop has called for " << this->currentBetAmount<<std::endl;
@@ -647,26 +678,36 @@ void Poker::bettingState(){
                     
                     this->notifyPlayerAllIn(player->playerIndex);
                 }
+                std::cout << this->pot << std::endl;
                 this->pot += chipsToAdd;
+                std::cout << this->pot << std::endl;
 
             
             }
             else if (decision == Decision::Check){
+                
+                numPlayersChecked++;
                 this->currentBetAmount = 0;
                 std::cout<<player->getName()<<" has checked"<<std::endl;
                 this->notifyPlayerCheck(player->playerIndex);
             }
             else if(decision == Decision::Raise){
                 int bet = player->getChipsToBet();
+                
                 std::cout<<player->getName()<<" has raised"<<bet<<std::endl;
-
+                prevBet = this->currentBetAmount;
                 this->currentBetAmount = this->currentBetAmount+bet;
+                this->pot += bet;
                 allPlayersChecked = false;
+                notifyPlayerRaise(player->playerIndex, currentBetAmount);
             }
             this->notifyUpdatePotAmount(this->pot);
+            std::cout << "pot amount = " << this->pot << std::endl;
             sf::sleep(sf::milliseconds(1000));
-            
+            if (numPlayersChecked==4) bettingComplete = true;
         }
+            
+    }
     std::cout<<"End of Betting"<<std::endl;
     this->incrementState();
     if(this->currentState ==GameState::Flop){
@@ -681,8 +722,7 @@ void Poker::bettingState(){
     else if(this->currentState ==GameState::ShowDown){
         this->showDownState();
     }
-     if (allPlayersChecked) bettingComplete = true;
-    }
+     
     this->currentBetAmount = 0;
 }
 void Poker::testFunc()

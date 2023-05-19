@@ -25,6 +25,7 @@ public:
     virtual void raisePlayer(int playerIndex, int raiseAmount)=0;
     virtual void updateShowdown(std::vector<Card> aiCards, std::vector<Card> ai2Cards, std::vector<Card> ai3Cards, int winner) = 0;
     virtual void updatePot(int pot) = 0;;
+    
 };
 
 class Subject {
@@ -117,6 +118,12 @@ public:
     void notifyUpdatePotAmount(int pot) {
         for (auto& observer : observers_) {
             observer->updatePot(pot);
+
+        }
+    }
+    void notifyPlayerRaise(int playerIndex, int amount) {
+        for (auto& observer : observers_) {
+            observer->raisePlayer(playerIndex,amount );
 
         }
     }

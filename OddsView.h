@@ -83,15 +83,12 @@ private:
 	int relativeHandStrength;
 	float percentHands;
 	
-	// Outs variables 
-	//void calculateOuts();
-	//bool shouldRemove(const Card& card, const std::vector<int>& indicesToRemove);
-	//Deck outsDeck;
+	
 	int outs;
 
 	// Expected value
-	//void calculateExpectedValue();
-
+	void calculateExpectedValue();
+	int expectedValue;
 
 	// player cards
 	Card player_card1;

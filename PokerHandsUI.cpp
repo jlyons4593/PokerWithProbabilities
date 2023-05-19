@@ -7,7 +7,7 @@ void PokerHandsUI::initVariables()
 
 void PokerHandsUI::initialiseWindow()
 {
-	this->videomode.height = 750;
+	this->videomode.height = 670;
 	this->videomode.width = 560;
 	/*this->videomode.getDesktopMode;*/
 	this->window = new sf::RenderWindow(this->videomode, "Poker&Probabilities", sf::Style::Titlebar | sf::Style::Close);

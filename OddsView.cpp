@@ -75,7 +75,7 @@ void OddsView::initialiseCommunityCards()
 void OddsView::initialiseOutsText()
 {
 	this->setTextProperties(this->outs_text_, "Outs", sf::Vector2f((this->videomode.width / 2) - 100.f, 600.f), int(this->videomode.width / 70), sf::Color::White);
-	this->setTextProperties(this->outs_value_text_, "69", sf::Vector2f((this->videomode.width / 2) - 100.f, 630.f), int(this->videomode.width / 70), sf::Color::White);
+	this->setTextProperties(this->outs_value_text_, std::to_string(this->outs), sf::Vector2f((this->videomode.width / 2) - 100.f, 630.f), int(this->videomode.width / 70), sf::Color::White);
 	
 }
 
@@ -182,41 +182,56 @@ void OddsView::calculateHandStrength()
 	if (HandEvaluator::isStraightFlush(this->playerCards, this->communityCards)) {
 		this->relativeHandStrength = 8;
 		this->percentHands = 0;
+		this->outs = 0;
 	}
 	else if (HandEvaluator::isFourOfAKind(this->playerCards, this->communityCards)) {
 		this->relativeHandStrength = 7;
 		this->percentHands = 0.0311;
+		this->outs = 0;
 	}
 	else if (HandEvaluator::isFullHouse(this->playerCards, this->communityCards)) {
 		this->relativeHandStrength = 6;
 		this->percentHands = 0.199;
+		this->outs = 1; 
 	}
 	else if (HandEvaluator::isFlush(this->playerCards, this->communityCards)) {
 		this->relativeHandStrength = 5;
 		this->percentHands = 2.8;
+		this->outs = 3;
 	}
 	else if (HandEvaluator::isStraight(this->playerCards, this->communityCards)) {
 		this->relativeHandStrength = 4;
 		this->percentHands = 5.82;
+		this->outs = 3;
 	}
 	else if (HandEvaluator::isThreeOfAKind(this->playerCards, this->communityCards)) {
 		this->relativeHandStrength = 3;
 		this->percentHands = 10.4;
+		this->outs = 6;
 	}
 	else if (HandEvaluator::isTwoPair(this->playerCards, this->communityCards)) {
 		this->relativeHandStrength = 2;
 		this->percentHands = 15.3;
+		this->outs = 10;
 	}
 	else if (HandEvaluator::isPair(this->playerCards, this->communityCards)) {
 		this->relativeHandStrength = 1;
 		this->percentHands = 38.8;
+		this->outs = 33;
 	}
 	else {
 		this->relativeHandStrength = 1;
 		this->percentHands = 82.6;
+		this->outs = 42;
 	}
 	/*std::vector<float> metrics = { (float)this->relativeHandStrength, this->percentHands };
 	return metrics;*/
+}
+
+void OddsView::calculateExpectedValue()
+{
+	float winProbability = (100 - this->percentHands)/100;
+	this->expectedValue = ((winProbability)*(this->pot + 20)) - ((1-winProbability)*20);
 }
 
 
@@ -288,8 +303,10 @@ void OddsView::updateCommunityCardsOnFlop(Card& c1, Card& c2, Card& c3)
 	this->community_card3_sprite.setTexture(this->deck.currentDeck[c3.index].cardFace);
 	this->calculateHandStrength();
 	this->hand_strength_value_text_.setString(std::to_string(this->percentHands) + "%");
-	//this->calculateOuts();
-	//this->outs_value_text_.setString(std::to_string(this->outs));
+	this->calculateExpectedValue();
+	this->expected_value_value_text_.setString(std::to_string(this->expectedValue));
+	
+	this->outs_value_text_.setString(std::to_string(this->outs));
 }
 
 void OddsView::updateCommunityCardsOnTurn(Card& card)
@@ -300,7 +317,9 @@ void OddsView::updateCommunityCardsOnTurn(Card& card)
 	this->calculateHandStrength();
 	this->hand_strength_value_text_.setString(std::to_string(this->percentHands) + "%");
 	//this->calculateOuts();
-	//this->outs_value_text_.setString(std::to_string(this->outs));
+	this->outs_value_text_.setString(std::to_string(this->outs));
+	this->calculateExpectedValue();
+	this->expected_value_value_text_.setString(std::to_string(this->expectedValue));
 }
 
 void OddsView::updateCommunityCardsOnRiver(Card& card)
@@ -309,6 +328,10 @@ void OddsView::updateCommunityCardsOnRiver(Card& card)
 	this->community_card5_sprite.setTexture(this->deck.currentDeck[card.index].cardFace);
 	this->calculateHandStrength();
 	this->hand_strength_value_text_.setString(std::to_string(this->percentHands) + "%");
+	this->calculateExpectedValue();
+	this->expected_value_value_text_.setString(std::to_string(this->expectedValue));
+	//this->outs_value_text_.setString("0");
+
 }
 
 void OddsView::updateShowdown(std::vector<Card> aiCards, std::vector<Card> ai2Cards, std::vector<Card> ai3Cards, int winner)

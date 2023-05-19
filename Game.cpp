@@ -61,7 +61,7 @@ void Game::initialiseMenuScreen()
 {
 	//add Text for Play vs AI, Settings, How to Use, Instructions
 
-	this->font.loadFromFile("Fonts/Roboto-Black.ttf");
+	this->font.loadFromFile("Fonts/OpenDyslexic-Regular.otf");
 
 	//Add menuBar
 	this->initialiseMenuBar();
@@ -137,7 +137,7 @@ void Game::initialiseDisclaimerUI()
 	std::string title = "Poker & Probabilities - Gambling Awareness Disclaimer:";
 	std::string text = "Poker & Probabilities is an educationaland entertaining game that explores the concepts of poker \nand probability. It does not involve real money wagers, and all chips or virtual currencies used hold\nno cash value.The game emphasizes understanding probability rather than promoting gambling \nbehavior.Please note that the outcomes are determined by random algorithms and simulated\nscenarios, which do not guarantee similar results in actual gambling activities.It is important to \napproach Poker& Probabilities responsibly, recognizing its recreational natureand seeking support\n from appropriate resources if needed.The creators and operators of Poker & Probabilities do not \nendorse real money gambling or any form of illegal gambling activities and shall not be held liable for \nany personal, financial, or legal consequences resulting from participating in the game or related\nactivities.";
 	
-	this->setTextProperties(this->disclaimerText, text, sf::Vector2f(50, this->videomode.height / 2 - 100), int(videomode.width / 50), sf::Color::White);
+	this->setTextProperties(this->disclaimerText, text, sf::Vector2f(50, this->videomode.height / 2 - 100), int(videomode.width / 60), sf::Color::White);
 	this->setTextProperties(this->disclaimerTitle, title, sf::Vector2f(this->videomode.width / 2, this->videomode.height / 2 - 150), int(videomode.width / 50), sf::Color::White);
 	this->disclaimerText.setOrigin(0,0);
 	this->setTextProperties(this->backText, "Back", sf::Vector2f(50, 50), int(videomode.width / 50), sf::Color::White);
@@ -203,7 +203,7 @@ void Game::initialiseInstructionUI()
 	std::string title = "Instructions";
 	this->setTextProperties(this->instructionTitle, title, sf::Vector2f(this->videomode.width / 2, this->videomode.height / 2 - 150), int(videomode.width / 40), sf::Color::White);
 	std::string text = "Choose between our 2 game modes.\nPractice gives you access to the Odds view while playing poker hands against AI. \nIn Play vs AI you're alone.\nPlay hands against the computer and improve your skills and collect achievements.\nIf you don't know the basics of poker you can learn as you go or head to www.learnpoker.com \nThis game aims to help improve your poker skills.\nThe odds view given in the practice mode allows players\nto access some helpful statistics that can aid you in getting better at Poker!";
-	this->setTextProperties(this->instructionText, text, sf::Vector2f(50, this->videomode.height / 2-100), int(videomode.width / 50), sf::Color::White);
+	this->setTextProperties(this->instructionText, text, sf::Vector2f(50, this->videomode.height / 2-100), int(videomode.width / 60), sf::Color::White);
 	this->instructionText.setOrigin(0, 0);
 }
 

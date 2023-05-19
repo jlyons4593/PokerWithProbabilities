@@ -4,7 +4,7 @@
 void HandLostUI::initVariables()
 {
 	this->isGameRunning = true;
-	this->font.loadFromFile("Fonts/Roboto-Black.ttf");
+	this->font.loadFromFile("Fonts/OpenDyslexic-Regular.otf");
 }
 void HandLostUI::initialiseWindow()
 {
@@ -18,7 +18,7 @@ void HandLostUI::initialiseWindow()
 
 void HandLostUI::initHandLostText()
 {
-	std::string string = "   Unlucky you Lose!!\nDo you want to play again?";
+	std::string string = "   Unlucky you Lose!!\n Next hand is yours!!";
 
 	this->setTextProperties(this->winningText, string, sf::Vector2f(this->videomode.width / 2, this->videomode.height / 2 - 150), int(this->videomode.width / 50), sf::Color::Black);
 }

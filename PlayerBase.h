@@ -9,25 +9,8 @@
 
 class PlayerBase{
 private:
-
-//total number of chips per player
-// int m_redChips;
-// int m_blueChips;
-// int m_greenChips;
-// int m_yellowChips;
-
-
-
-
-
-
 Card m_card1;
 Card m_card2;
-
-
-
-
-
 
 std::vector<Card> bestHand;
 

@@ -14,6 +14,7 @@ private:
 	sf::Text menuText;
 	sf::RectangleShape menuButton;
 
+	// Functions to create UI
 	void initVariables();
 	void initialiseWindow();
 	void initHandWonText();

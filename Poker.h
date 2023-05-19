@@ -16,9 +16,6 @@ private:
 //initialisation variables
 int m_numOfPlayers;
 
-
-
-
 //cards variables
 Deck m_currentDeck;
 
@@ -40,12 +37,6 @@ PlayerBase* AI4;
 //players vector
 std::vector<PlayerBase*> players;
 std::vector<PlayerBase*> playersInHand;
-
-//chip variables
-// int numOfRedChips;
-// int numOfYellowChips;
-// int numOfGreenChips;
-// int numOfBlueChips;
 
 
 
@@ -71,7 +62,6 @@ void initializeVariables();
 void initializePlayers();
 void setCommunityCards();
 
-void dealCards();
 std::vector<PlayerBase*> determineHandWinner();
 void setPlayerCards();
 void hand();
@@ -93,9 +83,7 @@ bool isPair(PlayerBase *player);
 void removePlayerFromHand(PlayerBase* player);
 void incrementState();
 
-void changeState();
 
-void gameOverState();
 void gameLostState();
 void gameWonState();
 void fullGame();
