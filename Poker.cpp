@@ -1,11 +1,13 @@
 #include "Poker.h"
 #include "PlayerBase.h"
 #include "AI.h"
-
+#include "HandWonUI.h"
+#include "HandLostUI.h"
 #include "Strategy.h"
 #include "SimpleStrategies.h"
 #include <algorithm>
 #include <thread>
+
 #include <chrono>
 #include <iostream>
 
@@ -14,10 +16,10 @@ void Poker::initializeVariables()
 {
     
 
-    this->chipsPerPlayer = 1500;
+   
     this->blindCounter=0;
     this->playersAreReady = false;
-    this->m_numOfPlayers = 4;
+    this->m_numOfPlayers = 3;
     this->currentBetAmount = 0;
     this->m_currentDeck.shuffleDeck();
 
@@ -45,7 +47,8 @@ void Poker::initializePlayers(){
     std::cout<<"here"<<std::endl;
     Player* player = new Player();
     player->setPlayer();
-    player->setName("Joe");
+    player->setName("Guest");
+    player->playerIndex=0;
     
     this->players.push_back(player);
  
@@ -57,14 +60,16 @@ void Poker::initializePlayers(){
     {
         std::cout<<i<<std::endl;
 
-        if( i %2 ==0){
-            this->players.push_back(new AI(new RandomStrategy));
+        if( i ==0){
+            
+            this->players.push_back(new AI(new HandStrengthStrategy));
             
         }
         else{
-            this->players.push_back(new AI(new HandStrengthStrategy));
+            this->players.push_back(new AI(new RandomStrategy));
         }
         this->players[i + 1]->setName("AI" + std::to_string(i+1));
+        this->players[i + 1]->playerIndex = i + 1;
 
 
     }
@@ -89,11 +94,10 @@ void Poker::setPlayerCards()
         cards.push_back(test2);
         std::cout<<(int)cards[0].value << " " <<(int)cards[1].value << " player "<< i << std::endl;
         this->players[i]->setCards(cards);
-        if ( this->players[i]->getName()=="Joe"){
-            std::cout<<"Joe"<<std::endl;
+        if ( this->players[i]->getName()=="Guest"){
+         
             this->notifyUpdatePlayersCards(cards);
             
-            std::cout<<"Joe"<<std::endl;
         }
         cards.clear();
     }
@@ -103,7 +107,9 @@ void Poker::setPlayerCards()
 } 
 
 
-
+void Poker::setChips(int chips) {
+    this->chipsPerPlayer = chips;
+}
 
 void Poker::setPlayerBlinds()
 {
@@ -190,9 +196,6 @@ bool Poker::isStraightFlush(PlayerBase *player){
     std::vector<Card> cards = player->getCards();
     cards.insert(cards.end(), this->communityCards.begin(), this->communityCards.end());
 
-    for (auto card : cards){
-        std::cout<<(int)card.value<<std::endl;
-    }
     if (isStraight(player) && isFlush(player)) {
         return true;
     }
@@ -205,20 +208,15 @@ bool Poker::isFourOfAKind(PlayerBase *player){
     std::vector<Card> cards = player->getCards();
     cards.insert(cards.end(), this->communityCards.begin(), this->communityCards.end());
     
-    auto compareByValue = [](const Card& a, const Card& b) {
-    return a.value < b.value;
-    };
-    // std::cout<<"num of cards is "<< cards.size() << std::endl;
-    // for (auto& card : this->communityCards){
-    //     std::cout<<(int)card.value<<" "<<(int)card.value<<std::endl;
-    // }
+    //function to return card hand ranks
+    auto compareByValue = [](const Card& a, const Card& b) {return a.value < b.value;};
 
-
+    // sort
     std::sort(cards.begin(), cards.end(), compareByValue);
 
     // Check for four of a kind
     for (size_t i = 0; i <= cards.size() - 4; i++) {
-        // std::cout << "cards in 4 of a kind function "<< (int)cards[i].value << std::endl;
+        //compare all cards to cards next to it
         if (cards[i].value == cards[i+1].value && cards[i+1].value == cards[i+2].value
             && cards[i+2].value == cards[i+3].value) {
             return true;
@@ -235,9 +233,16 @@ bool Poker::isFullHouse(PlayerBase *player){
 
     // Check for full house
     std::map<CardValue, int> cardValueCount;
+
+    // adding each card rank to map and
+    // increasing the value everytime a new card is entered
     for (const auto& card : cards) {
         ++cardValueCount[card.value];
     }
+
+    // map would look like
+    //{2:0,3:1,4:3,2:3}
+    // full house because 3 of one card 2 of another.
 
     bool hasThreeOfAKind = false;
     bool hasPair = false;
@@ -257,28 +262,31 @@ bool Poker::isFlush(PlayerBase *player){
     std::vector<Card> cards = player->getCards();
     cards.insert(cards.end(), this->communityCards.begin(), this->communityCards.end());
 
-  
+    // Check for flush
     std::map<Suit, int> suitCount;
+    // adding each card suit to map and
+    // increasing the value everytime a new card is entered
     for (const auto& card : cards) {
         suitCount[card.suit]++;
     }
-
+    // map would look like
+    //{1:0,2:0,3:5,2:2}
+    // full house because 3 of one card 2 of another.
     for (const auto& suit : suitCount) {
         if (suit.second >= 5) {
-            std::vector<Card> flushCards;
-            for (const auto& card : cards) {
-                if (card.suit == suit.first) {
-                    flushCards.push_back(card);
-                }
-            }
-          
-            player->setBestHand(flushCards);
+            
             return true;
         }
     }
     return false;
 }
 
+//std::vector<Card> flushCards;
+//for (const auto& card : cards) {
+//    if (card.suit == suit.first) {
+//        flushCards.push_back(card);
+//    }
+//}
 bool Poker::isStraight(PlayerBase *player){
     
 
@@ -288,9 +296,13 @@ bool Poker::isStraight(PlayerBase *player){
     auto compareByValue = [](const Card& a, const Card& b) {
     return a.value < b.value;
     };
+
+    //sort
     std::sort(cards.begin(), cards.end(), compareByValue);
     
     int count = 0;
+    //looping and checking if any of the handranks come one
+    //after another for 4 cards straight
     for (int i = 0; i < cards.size() - 1; i++) {
         if (int(cards[i+1].value) - int(cards[i].value) == 1) {
             count++;
@@ -309,12 +321,16 @@ bool Poker::isStraight(PlayerBase *player){
 bool Poker::isThreeOfAKind(PlayerBase *player){
     std::vector<Card> cards = player->getCards();
     cards.insert(cards.end(), this->communityCards.begin(), this->communityCards.end());
+
+
     auto compareByValue = [](const Card& a, const Card& b) {
     return a.value < b.value;
     };
+
+    //sort
     std::sort(cards.begin(), cards.end(), compareByValue);
 
-    // Check for three of a kind
+    // Check for three of a kind same process as 4 of a kind
     for (size_t i = 0; i <= cards.size() - 3; i++) {
         if (cards[i].value == cards[i+1].value && cards[i+1].value == cards[i+2].value) {
             return true;
@@ -331,10 +347,14 @@ bool Poker::isTwoPair(PlayerBase *player){
     auto compareByValue = [](const Card& a, const Card& b) {
     return a.value < b.value;
     };
+
+    //sort
     std::sort(cards.begin(), cards.end(), compareByValue);
     
 
     int numPairs = 0;
+    // go through and check for pairs once we find one pair we increment
+    // numPairs and check for the second
     CardValue firstPairValue = CardValue::Two;  // arbitrary initial value
     for (size_t i = 0; i < cards.size() - 1; i++) {
         if (cards[i].value == cards[i+1].value) {
@@ -359,6 +379,8 @@ bool Poker::isPair(PlayerBase *player){
     auto compareByValue = [](const Card& a, const Card& b) {
     return a.value < b.value;
     };
+
+    //sort
     std::sort(cards.begin(), cards.end(), compareByValue);
 
     // Check for four of a kind
@@ -385,25 +407,25 @@ std::vector<PlayerBase*> Poker::determineHandWinner(){
         if (this->isStraightFlush(player)){
             if (rank==8){
                 topPlayerHands.push_back(player);
-                std::cout<< " straightflush if"<<std::endl;
+               
             }
             else{
                 rank = 8;
                 topPlayerHands.clear();
                 topPlayerHands.push_back(player);
-                std::cout<< " straightflush else"<<std::endl;
+            
             }
         }
         else if (this->isFourOfAKind(player)&&rank<8){
             if (rank==7){
                 topPlayerHands.push_back(player);
-                std::cout<< " 4 if"<<std::endl;
+            
             }
             else{
                 rank = 7;
                 topPlayerHands.clear();
                 topPlayerHands.push_back(player);
-                std::cout<< " 4 else"<<std::endl;
+              
             }
             
         }
@@ -527,15 +549,15 @@ void Poker::startHandState()
     
     std::cout<< "setting community cards"<< std::endl;
     
+   
+    
 }
 void Poker::incrementState(){
     this->currentState = static_cast<GameState>(this->currentState + 1); 
 }
 void Poker::startGame()
 {
-    
-    std::cout<<"Testing"<< std::endl;
-    std::cout<<"shid"<<std::endl;
+  
     std::cout<< "num of players = "<< this->players.size()<<std::endl;
     
     for(auto& player: this->players){
@@ -567,34 +589,88 @@ void Poker::riverState()
     this->bettingState();
 }
 void Poker::showDownState(){
+    std::vector<PlayerBase*> players =this->determineHandWinner();
+    std::cout << players[0]->getName() << std::endl;
+    
 
+    notifyUpdateOnShowDown(this->playersInHand[1]->getCards(), this->playersInHand[2]->getCards(), this->playersInHand[3]->getCards(), players[0]->playerIndex);
+}
+void Poker::gameLostState() {
+    
+    this->notifyGameLost();
+   
+    std::cout << "game over sequence" << std::endl;
+}
+void Poker::gameWonState() {
+    this->notifyGameWon();
 }
 void Poker::bettingState(){
-    bool bettingComplete;
+    bool bettingComplete = false;
 
-    std::cout<<"in bet state"<<std::endl;
-    // while(!bettingComplete)
-    // {
-        bool allPlayersChecked;
-        std::cout<<"in bet loop"<<std::endl;
+    int bettingRound = 0;
+    
+    int prevBet;
+    while(!bettingComplete)
+    {
+        int numPlayersChecked =0;
+        bettingRound++;
+        bool allPlayersChecked = false;
+  
         for (auto& player : this->playersInHand)
         {
-            std::cout<<"in main  loop of bets"<<std::endl;
-            Decision decision = player->makeDecision(this->currentBetAmount);
-            std::cout<<"decision made champ"<<std::endl;
+            std::cout << "pot = " << this->pot << std::endl;
+            Decision decision = player->makeDecision(this->currentBetAmount, bettingRound);
+           
 
             if (decision == Decision::Fold) {
                 std::cout<<player->getName()<<" has folded"<<std::endl;
-                this->removePlayerFromHand(player);
+                if (player->getName() == "Guest") {
+                    this->gameLostState();
+                }
                 this->notifyPlayerFolded(player->playerIndex);
+                this->removePlayerFromHand(player);
+                
+                
+       
+                
+                
             }
             else if (decision == Decision::Call){
                 
                 int chipsToAdd;
-                if(player->getChips(this->currentBetAmount)){
+                if (player->getName() == "Guest") {
+                    if (player->takeChips(this->currentBetAmount-prevBet)) {
+                        std::cout << player->getName() << " has called for " << this->currentBetAmount << std::endl;
+                        this->notifyPlayerCall(player->playerIndex, this->currentBetAmount);
+                        if (player->getName() == "Guest") {
+                            chipsToAdd = 0;
+                            this->currentBetAmount = 0;
+
+                        }
+                        else {
+                            chipsToAdd = this->currentBetAmount;
+
+                        }
+                    }
+                    else {
+                        std::cout << player->getName() << " else loop has called for " << this->currentBetAmount << std::endl;
+                        chipsToAdd = player->allIn();
+
+                        this->notifyPlayerAllIn(player->playerIndex);
+                    }
+                }
+                if(player->takeChips(this->currentBetAmount)){
                     std::cout<<player->getName()<<" has called for " << this->currentBetAmount<<std::endl;
                     this->notifyPlayerCall(player->playerIndex, this->currentBetAmount);
-                    chipsToAdd = this->currentBetAmount;
+                    if (player->getName() == "Guest") {
+                        chipsToAdd = 0;
+                        this->currentBetAmount = 0;
+
+                    }
+                    else {
+                        chipsToAdd = this->currentBetAmount;
+
+                    }
                 }
                 else{
                     std::cout<<player->getName()<<" else loop has called for " << this->currentBetAmount<<std::endl;
@@ -602,24 +678,37 @@ void Poker::bettingState(){
                     
                     this->notifyPlayerAllIn(player->playerIndex);
                 }
+                std::cout << this->pot << std::endl;
                 this->pot += chipsToAdd;
+                std::cout << this->pot << std::endl;
 
             
             }
             else if (decision == Decision::Check){
                 
+                numPlayersChecked++;
+                this->currentBetAmount = 0;
                 std::cout<<player->getName()<<" has checked"<<std::endl;
                 this->notifyPlayerCheck(player->playerIndex);
             }
             else if(decision == Decision::Raise){
                 int bet = player->getChipsToBet();
+                
                 std::cout<<player->getName()<<" has raised"<<bet<<std::endl;
-
+                prevBet = this->currentBetAmount;
                 this->currentBetAmount = this->currentBetAmount+bet;
+                this->pot += bet;
                 allPlayersChecked = false;
+                notifyPlayerRaise(player->playerIndex, currentBetAmount);
             }
+            this->notifyUpdatePotAmount(this->pot);
+            std::cout << "pot amount = " << this->pot << std::endl;
+            sf::sleep(sf::milliseconds(1000));
+            if (numPlayersChecked==4) bettingComplete = true;
         }
-        std::cout<<"End of Betting"<<std::endl;
+            
+    }
+    std::cout<<"End of Betting"<<std::endl;
     this->incrementState();
     if(this->currentState ==GameState::Flop){
         this->flopState();
@@ -633,8 +722,7 @@ void Poker::bettingState(){
     else if(this->currentState ==GameState::ShowDown){
         this->showDownState();
     }
-    // if (allPlayersChecked) bettingComplete = true;
-    // }
+     
     this->currentBetAmount = 0;
 }
 void Poker::testFunc()
@@ -650,10 +738,12 @@ Poker::Poker()
 {
     this->initializeVariables();
     this->initializePlayers();
+    
 
     std::cout<<this->playersInHand.size()<<std::endl;
     std::cout<<"Poker"<<std::endl;
 }
+
 
 Poker::~Poker(){
 

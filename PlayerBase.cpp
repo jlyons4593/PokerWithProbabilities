@@ -42,13 +42,17 @@ int PlayerBase::allIn(){
     return x;
 }
 
-bool PlayerBase::getChips(int chipAmount){
-    std::cout<<"players chips = "<< this->numChips<<std::endl;
+bool PlayerBase::takeChips(int chipAmount){
     if (this->numChips>chipAmount){
         this->numChips -= chipAmount;
         return true;
     }
     return false;
+}
+
+int PlayerBase::returnNumberOfChips()
+{
+    return numChips;
 }
 
 std::string PlayerBase::getName(){
@@ -59,7 +63,7 @@ int PlayerBase::getChipsToBet(){
 }
 
 bool PlayerBase::payBlind(int amount){
-    std::cout<< "number of red chips = "<< this->numChips << std::endl;
+    std::cout<< "number of chips = "<< this->numChips << std::endl;
     if (amount > this->numChips){
         
         return false;

@@ -9,25 +9,8 @@
 
 class PlayerBase{
 private:
-
-//total number of chips per player
-// int m_redChips;
-// int m_blueChips;
-// int m_greenChips;
-// int m_yellowChips;
-
-
-
-
-
-
 Card m_card1;
 Card m_card2;
-
-
-
-
-
 
 std::vector<Card> bestHand;
 
@@ -50,11 +33,13 @@ void setName(std::string name);
 
 std::string getName();
 
-virtual Decision makeDecision(int currentBet) = 0;
+virtual Decision makeDecision(int currentBet, int bettingRound) = 0;
 
 virtual bool payBlind(int amount);
 
-bool getChips(int chipAmount);
+bool takeChips(int chipAmount);
+
+int returnNumberOfChips();
 
 void setCards(std::vector<Card>& cards);
 

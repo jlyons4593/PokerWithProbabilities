@@ -16,9 +16,6 @@ private:
 //initialisation variables
 int m_numOfPlayers;
 
-
-
-
 //cards variables
 Deck m_currentDeck;
 
@@ -40,12 +37,6 @@ PlayerBase* AI4;
 //players vector
 std::vector<PlayerBase*> players;
 std::vector<PlayerBase*> playersInHand;
-
-//chip variables
-// int numOfRedChips;
-// int numOfYellowChips;
-// int numOfGreenChips;
-// int numOfBlueChips;
 
 
 
@@ -71,12 +62,11 @@ void initializeVariables();
 void initializePlayers();
 void setCommunityCards();
 
-void dealCards();
 std::vector<PlayerBase*> determineHandWinner();
 void setPlayerCards();
 void hand();
 void setPlayerBlinds();
-bool compareByValue(const Card& a, const Card& b);
+
 
 // determine hands rank
 bool isStraightFlush(PlayerBase *player);
@@ -93,8 +83,9 @@ bool isPair(PlayerBase *player);
 void removePlayerFromHand(PlayerBase* player);
 void incrementState();
 
-void changeState();
 
+void gameLostState();
+void gameWonState();
 void fullGame();
 void startHandState();
 
@@ -108,8 +99,9 @@ enum GameState{
     ShowDown,
     GameOver
 };
-
 int chipsPerPlayer;
+
+void setChips(int chips);
 
 GameState currentState;
 //Constructors and Destructors

@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <cmath>
+#include "AudioManager.cpp"
 
 #include "PokerOfflineUi.h"
 #include "PokerOfflineUiSingleton.h"
@@ -15,20 +16,16 @@ void Game::initialiseVariables()
 	this->window = nullptr;
 	
 	this->lMBDown = false;
-
-
-
-	this->deckLoader();
-
-}
-
-void Game::deckLoader() {
-	// Creating deck instance
-	
-	
-
+	this->inDisclaimer = false;
+	this->inInstruction = false;
+	this->inSettings = false;
+	this->playerMoney = 150;
+	this->volume = 10;
+	this->masterPlayerMoney = 150;
 
 }
+
+
 
 void Game::initialiseWindow()
 {
@@ -64,7 +61,7 @@ void Game::initialiseMenuScreen()
 {
 	//add Text for Play vs AI, Settings, How to Use, Instructions
 
-	this->font.loadFromFile("Fonts/Roboto-Black.ttf");
+	this->font.loadFromFile("Fonts/OpenDyslexic-Regular.otf");
 
 	//Add menuBar
 	this->initialiseMenuBar();
@@ -78,45 +75,20 @@ void Game::initialiseMenuScreen()
 	// Menu choices
 
 	//Play vs computer
-	this->playVsAi.setString("Play vs Computer");
-	this->playVsAi.setFillColor(sf::Color::White);
-	this->playVsAi.setFont(font);
-	this->playVsAi.setCharacterSize(int(videomode.width/30));
-	sf::FloatRect playVsAiRectangle = this->playVsAi.getLocalBounds();
-	this->playVsAi.setOrigin(playVsAiRectangle.left + round(playVsAiRectangle.width / 2.0f), playVsAiRectangle.top + round(playVsAiRectangle.height / 2.0f));
-	this->playVsAi.setPosition(this->videomode.width / 2, 200 + this->videomode.height / 8);
+	this->setTextProperties(this->playVsAi, "Play vs Computer", sf::Vector2f((this->videomode.width / 2), 200 + (this->videomode.height / 8)), int(videomode.width / 30), sf::Color::White);
 
+	// Practice
+	this->setTextProperties(this->practice, "Practice", sf::Vector2f((this->videomode.width / 2), 200 + 2 * (this->videomode.height / 8)), int(videomode.width / 30), sf::Color::White);
+	
 	//settings item
-
-	this->settings.setString("Settings");
-	this->settings.setFillColor(sf::Color::White);
-	this->settings.setFont(font);
-	this->settings.setCharacterSize(int(videomode.width/30)); 
-	sf::FloatRect settingsRectangle = this->settings.getLocalBounds();
-	this->settings.setOrigin(settingsRectangle.left + round(settingsRectangle.width / 2.0f), settingsRectangle.top + round(settingsRectangle.height / 2.0f));
-	this->settings.setPosition(this->videomode.width / 2, 200 + 2*(this->videomode.height / 8));
+	this->setTextProperties(this->settings, "Settings", sf::Vector2f((this->videomode.width / 2), 200 + 3 * (this->videomode.height / 8)), int(videomode.width / 30), sf::Color::White);
 
 	// how to play choice
-	
-	this->howToPlay.setString("How To Play");
-	this->howToPlay.setFillColor(sf::Color::White);
-	this->howToPlay.setFont(font);
-	this->howToPlay.setCharacterSize(int(videomode.width/30));
-	sf::FloatRect howToPlayRectangle = this->howToPlay.getLocalBounds();
-	
-	this->howToPlay.setOrigin(howToPlayRectangle.left + round(howToPlayRectangle.width / 2.0f), howToPlayRectangle.top + round(howToPlayRectangle.height / 2.0f));
-	this->howToPlay.setPosition(round(this->videomode.width / 2), 200+3*(this->videomode.height / 8));
-
+	this->setTextProperties(this->disclaimer, "Disclaimer", sf::Vector2f((this->videomode.width / 2), 200 + 4 * (this->videomode.height / 8)), int(videomode.width / 30), sf::Color::White);
 	
 	//instructions choice
+	this->setTextProperties(this->instructions, "Instructions", sf::Vector2f((this->videomode.width / 2), 200 + 5 * (this->videomode.height / 8)), int(videomode.width / 30), sf::Color::White);
 
-	this->instructions.setString("Instructions");
-	this->instructions.setFillColor(sf::Color::White);
-	this->instructions.setFont(font);
-	this->instructions.setCharacterSize(int(videomode.width/30));
-	sf::FloatRect instructionsRectangle = this->instructions.getLocalBounds();
-	this->instructions.setOrigin(instructionsRectangle.left + round(instructionsRectangle.width / 2.0f), instructionsRectangle.top + round(instructionsRectangle.height / 2.0f));
-	this->instructions.setPosition(this->videomode.width / 2, 200 + 4*(this->videomode.height / 8));
 
 	
 
@@ -160,6 +132,273 @@ void Game::initialisePlayingCards()
 
 }
 
+void Game::initialiseDisclaimerUI()
+{
+	std::string title = "Poker & Probabilities - Gambling Awareness Disclaimer:";
+	std::string text = "Poker & Probabilities is an educationaland entertaining game that explores the concepts of poker \nand probability. It does not involve real money wagers, and all chips or virtual currencies used hold\nno cash value.The game emphasizes understanding probability rather than promoting gambling \nbehavior.Please note that the outcomes are determined by random algorithms and simulated\nscenarios, which do not guarantee similar results in actual gambling activities.It is important to \napproach Poker& Probabilities responsibly, recognizing its recreational natureand seeking support\n from appropriate resources if needed.The creators and operators of Poker & Probabilities do not \nendorse real money gambling or any form of illegal gambling activities and shall not be held liable for \nany personal, financial, or legal consequences resulting from participating in the game or related\nactivities.";
+	
+	this->setTextProperties(this->disclaimerText, text, sf::Vector2f(50, this->videomode.height / 2 - 100), int(videomode.width / 60), sf::Color::White);
+	this->setTextProperties(this->disclaimerTitle, title, sf::Vector2f(this->videomode.width / 2, this->videomode.height / 2 - 150), int(videomode.width / 50), sf::Color::White);
+	this->disclaimerText.setOrigin(0,0);
+	this->setTextProperties(this->backText, "Back", sf::Vector2f(50, 50), int(videomode.width / 50), sf::Color::White);
+	this->setRectangleProperties(this->backButton, sf::Vector2f(70.f, 80.f), sf::Vector2f(50, 50), sf::Color::Black);
+
+}
+
+void Game::updateDisclaimer()
+{
+	this->pollEvents();
+
+	// Update mouse positions
+	this->updateMousePositions();
+	this->handleDisclaimerUpdate();
+}
+
+void Game::renderDisclaimer()
+{
+	this->window->clear(sf::Color(0, 100, 0));
+
+
+
+	//draw menu
+	this->window->draw(this->menuBar);
+	this->window->draw(this->title);
+	this->window->draw(this->disclaimerText);
+	this->window->draw(this->backButton);
+	this->window->draw(this->backText);
+	this->window->draw(this->disclaimerTitle);
+	
+
+
+
+	this->window->display();
+}
+
+void Game::handleDisclaimerUpdate()
+{
+	//check if clicked
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		if (this->backButton.getGlobalBounds().contains(this->mousePositionFloat))
+		{
+			if (!this->lMBDown)
+			{
+				AudioManager::getInstance().playMenuNoise();
+				this->lMBDown = true;
+				this->inDisclaimer = false;
+				this->inInstruction = false;
+				this->inSettings = false;
+			}
+		}
+
+	}
+	else
+	{
+		this->lMBDown = false;
+	}
+}
+
+void Game::initialiseInstructionUI()
+{
+	std::string title = "Instructions";
+	this->setTextProperties(this->instructionTitle, title, sf::Vector2f(this->videomode.width / 2, this->videomode.height / 2 - 150), int(videomode.width / 40), sf::Color::White);
+	std::string text = "Choose between our 2 game modes.\nPractice gives you access to the Odds view while playing poker hands against AI. \nIn Play vs AI you're alone.\nPlay hands against the computer and improve your skills and collect achievements.\nIf you don't know the basics of poker you can learn as you go or head to www.learnpoker.com \nThis game aims to help improve your poker skills.\nThe odds view given in the practice mode allows players\nto access some helpful statistics that can aid you in getting better at Poker!";
+	this->setTextProperties(this->instructionText, text, sf::Vector2f(50, this->videomode.height / 2-100), int(videomode.width / 60), sf::Color::White);
+	this->instructionText.setOrigin(0, 0);
+}
+
+void Game::updateInstruction()
+{
+	this->pollEvents();
+
+	// Update mouse positions
+	this->updateMousePositions();
+	this->handleDisclaimerUpdate();
+}
+
+void Game::renderInstruction()
+{
+	this->window->clear(sf::Color(0, 100, 0));
+
+
+
+	//draw menu
+	this->window->draw(this->menuBar);
+	this->window->draw(this->title);
+	this->window->draw(this->instructionTitle);
+	
+	this->window->draw(this->instructionText);
+	this->window->draw(this->backButton);
+	this->window->draw(this->backText);
+
+
+
+
+	this->window->display();
+}
+
+
+
+void Game::initialiseSettingsUI()
+{
+	//Title
+	this->setTextProperties(this->settingsText, "Settings", sf::Vector2f(this->videomode.width / 2, 200), int(videomode.width / 30), sf::Color::White);
+	// Settings
+	this->setTextProperties(this->volumeText, "Volume", sf::Vector2f(this->videomode.width / 2 -200, this->videomode.height / 2), int(videomode.width / 50), sf::Color::White);
+	this->setTextProperties(this->playerMoneyText, "Money per Player", sf::Vector2f(this->videomode.width / 2+200, this->videomode.height / 2), int(videomode.width / 50), sf::Color::White);
+	
+	// Volume adjusters
+
+	this->setTextProperties(this->volumeIncrementText, "+", sf::Vector2f(this->videomode.width / 2-135, this->videomode.height / 2 + 50), int(videomode.width / 40), sf::Color::White);
+	this->setRectangleProperties(this->volumeIncrementButton, sf::Vector2f(40.f, 40.f), this->volumeIncrementText.getPosition(), sf::Color::Black);
+	
+	this->setTextProperties(this->volumeDecrementText, "-", sf::Vector2f(this->videomode.width / 2-265, this->videomode.height / 2 + 50), int(videomode.width / 25), sf::Color::White);
+	this->setRectangleProperties(this->volumeDecrementButton, sf::Vector2f(40.f, 40.f), this->volumeDecrementText.getPosition(), sf::Color::Black);
+
+	this->setTextProperties(this->volumeDisplayText, std::to_string(volume), sf::Vector2f(this->videomode.width / 2 - 200, this->videomode.height / 2 + 50), int(videomode.width / 50), sf::Color::Black);
+	this->setRectangleProperties(this->volumeDisplayRect, sf::Vector2f(70.f, 40.f), this->volumeDisplayText.getPosition(), sf::Color::White);
+
+	
+	// Player Money adjusters
+	this->setTextProperties(this->playerMoneyDecrementText, "-", sf::Vector2f(this->videomode.width / 2+135, this->videomode.height / 2 + 50), int(videomode.width / 25), sf::Color::White);
+	this->setRectangleProperties(this->playerMoneyDecrementButton, sf::Vector2f(40.f, 40.f), this->playerMoneyDecrementText.getPosition(), sf::Color::Black);
+
+	this->setTextProperties(this->playerMoneyIncrementText, "+", sf::Vector2f(this->videomode.width / 2+265, this->videomode.height / 2 + 50), int(videomode.width / 40), sf::Color::White);
+	this->setRectangleProperties(this->playerMoneyIncrementButton, sf::Vector2f(40.f, 40.f), this->playerMoneyIncrementText.getPosition(), sf::Color::Black);
+
+	this->setTextProperties(this->playerMoneyDisplayText, "150", sf::Vector2f(this->videomode.width / 2+200, this->videomode.height / 2 + 50), int(videomode.width / 50), sf::Color::Black);
+	this->setRectangleProperties(this->playerMoneyDisplayRect, sf::Vector2f(70.f, 40.f), this->playerMoneyDisplayText.getPosition(), sf::Color::White);
+	
+	
+	this->setTextProperties(this->applyChangesText, "Apply", sf::Vector2f(this->videomode.width / 2, this->videomode.height / 2 + 250), int(videomode.width / 50), sf::Color::White);
+	this->setRectangleProperties(this->applyChangesButton, sf::Vector2f(100.f, 60.f), this->applyChangesText.getPosition(), sf::Color::Black);
+
+
+	
+}
+
+void Game::updateSettings()
+{
+	this->pollEvents();
+
+	// Update mouse positions
+	this->updateMousePositions();
+	this->handleSettingsUpdate();
+}
+
+void Game::renderSettings()
+{
+	this->window->clear(sf::Color(0, 100, 0));
+
+
+
+	//draw menu
+	this->window->draw(this->menuBar);
+	this->window->draw(this->title);
+	this->window->draw(this->settingsText);
+	this->window->draw(this->playerMoneyText);
+	this->window->draw(this->volumeText);
+
+
+	this->window->draw(this->volumeDecrementButton);
+	this->window->draw(this->volumeIncrementButton);
+	this->window->draw(this->volumeIncrementText);
+	this->window->draw(this->volumeDecrementText);
+
+	this->window->draw(this->playerMoneyIncrementButton);
+	this->window->draw(this->playerMoneyDecrementButton);
+	this->window->draw(this->playerMoneyDecrementText);
+	this->window->draw(this->playerMoneyIncrementText);
+	
+
+	this->window->draw(this->volumeDisplayRect);
+	this->window->draw(this->volumeDisplayText);
+
+	this->window->draw(this->playerMoneyDisplayRect);
+	this->window->draw(this->playerMoneyDisplayText);
+
+
+	this->window->draw(this->backButton);
+	this->window->draw(this->backText);
+
+	this->window->draw(this->applyChangesButton);
+	this->window->draw(this->applyChangesText);
+
+
+
+	this->window->display();
+}
+
+void Game::handleSettingsUpdate()
+{
+	//check if clicked
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		if (!this->lMBDown) {
+			this->lMBDown = true;
+			if (this->backButton.getGlobalBounds().contains(this->mousePositionFloat))
+			{
+
+				AudioManager::getInstance().playMenuNoise();
+				this->lMBDown = true;
+				this->inDisclaimer = false;
+				this->inInstruction = false;
+				this->inSettings = false;
+
+
+			}
+			else if (this->playerMoneyIncrementButton.getGlobalBounds().contains(this->mousePositionFloat)) {
+
+				if (this->playerMoney == 500) { this->playerMoney = 50; }
+				else {
+					this->playerMoney += 10;
+				}
+				this->playerMoneyDisplayText.setString(std::to_string(this->playerMoney));
+
+			}
+			else if (this->playerMoneyDecrementButton.getGlobalBounds().contains(this->mousePositionFloat)) {
+
+				if (this->playerMoney == 50) { this->playerMoney = 500; }
+				else {
+					this->playerMoney -= 10;
+				}
+				this->playerMoneyDisplayText.setString(std::to_string(this->playerMoney));
+
+			}
+			else if (this->volumeIncrementButton.getGlobalBounds().contains(this->mousePositionFloat)) {
+
+				if (this->volume != 10) {
+					this->volume += 1;
+				}
+				this->volumeDisplayText.setString(std::to_string(this->volume));
+
+			}
+			else if (this->volumeDecrementButton.getGlobalBounds().contains(this->mousePositionFloat)) {
+
+				if (this->volume != 0) {
+					this->volume -= 1;
+				}
+				this->volumeDisplayText.setString(std::to_string(this->volume));
+
+			}
+			else if (this->applyChangesButton.getGlobalBounds().contains(this->mousePositionFloat)) {
+
+				
+				this->masterPlayerMoney = this->playerMoney;
+				AudioManager::getInstance().setVolume(this->volume);
+
+			}
+
+
+		}
+		
+	}
+	else
+	{
+		this->lMBDown = false;
+	}
+}
+
 
 
 
@@ -169,7 +408,9 @@ Game::Game()
 	this->initialiseVariables();
 	this->initialiseWindow();
 	this->initialiseMenuScreen();
-
+	this->initialiseDisclaimerUI();
+	this->initialiseInstructionUI();
+	this->initialiseSettingsUI();
 }
 
 Game::~Game()
@@ -200,11 +441,12 @@ void Game::pollEvents()
 
 void Game::renderMenuText(sf::RenderTarget& target)
 {
-	target.draw(this->howToPlay);
+	target.draw(this->disclaimer);
 	target.draw(this->instructions);
 	target.draw(this->playVsAi);
 	target.draw(this->settings);
 	target.draw(this->title);
+	target.draw(this->practice);
 }
 
 void Game::renderMenuSprites(sf::RenderTarget& target)
@@ -219,24 +461,73 @@ void Game::renderMenuSprites(sf::RenderTarget& target)
 
 void Game::processMenuChoices()
 {
-	if (this->howToPlay.getGlobalBounds().contains(this->mousePositionFloat))
+	if (this->disclaimer.getGlobalBounds().contains(this->mousePositionFloat))
 	{
-		std::cout << "User chose how to play" << std::endl;
+		this->inDisclaimer = true;
+		AudioManager::getInstance().playMenuNoise();
+		while (this->inDisclaimer) {
+			this->updateDisclaimer();
+			this->renderDisclaimer();
+		}
+		
 
 	}
 	else if (this->settings.getGlobalBounds().contains(this->mousePositionFloat))
 	{
+		AudioManager::getInstance().playMenuNoise();
+		this->inSettings = true;
+
+		while (this->inSettings) {
+			this->updateSettings();
+			this->renderSettings();
+		}
 		std::cout << "User chose Settings" << std::endl;
 	}
 	else if (this->instructions.getGlobalBounds().contains(this->mousePositionFloat))
 	{
+		AudioManager::getInstance().playMenuNoise();
+		this->inInstruction = true;
+		
+		while (this->inInstruction) {
+			this->updateInstruction();
+			this->renderInstruction();
+		}
 		std::cout << "User chose instructions" << std::endl;
 	}
-	else if (this->playVsAi.getGlobalBounds().contains(this->mousePositionFloat))
+	else if (this->practice.getGlobalBounds().contains(this->mousePositionFloat)) 
 	{
+		AudioManager::getInstance().playMenuNoise();
 		PokerOfflineUiSingleton& singleton = PokerOfflineUiSingleton::getInstance();
 		PokerOfflineUi* newGame = singleton.getPokerOfflineUi();
 		this->window->close();
+
+		newGame->setVariables(masterPlayerMoney, true);
+		newGame->launchUI();
+		while (!newGame->hasStarted) {
+			newGame->initialUpdate();
+
+			newGame->render();
+		}
+		newGame->startBetting();
+
+		while (newGame->isGameRunning())
+		{
+			//Update
+			newGame->update();
+
+			//Render
+			newGame->render();
+		}
+	}
+	else if (this->playVsAi.getGlobalBounds().contains(this->mousePositionFloat))
+	{
+		AudioManager::getInstance().playMenuNoise();
+		PokerOfflineUiSingleton& singleton = PokerOfflineUiSingleton::getInstance();
+		PokerOfflineUi* newGame = singleton.getPokerOfflineUi();
+		this->window->close();
+
+		newGame->setVariables(masterPlayerMoney, false);
+		newGame->launchUI();
 		
 		while (!newGame->hasStarted){
 			newGame->initialUpdate();

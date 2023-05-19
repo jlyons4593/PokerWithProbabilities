@@ -1,3 +1,8 @@
+#ifndef POKEROFFLINEUISINGLETON_H
+#define POKEROFFLINEUISINGLETON_H
+
+
+
 #pragma once
 
 #include "PokerOfflineUi.h"
@@ -24,3 +29,4 @@ private:
     // Private member variable to hold the pointer to the PokerOfflineUi object
     PokerOfflineUi* pokerOfflineUiInstance;
 };
+#endif // POKEROFFLINEUISINGLETON_H
